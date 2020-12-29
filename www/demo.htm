@@ -1,0 +1,238 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate" />
+        <meta http-equiv="Pragma" content="no-cache" />
+        <meta http-equiv="Expires" content="0" />
+        <link rel="stylesheet" href="chat.css" type="text/css" />
+    </head>
+    <body>
+        <div id="main-body">
+        <div id="join-area">
+            <!--<div id="room-name-caption">Room: </div> 
+            <p id="room-name-area"><select id="room-name-input"> 
+                    <option>public</option>
+                </select>
+            </p>
+            <div id="user-name-caption">Screen name: </div> 
+            <p id="user-name-area"><input id="user-name-input"></p>
+        -->
+            <p id="tips-caption">Tips:</p>
+            <ul>
+                <li>Wear Headphones to avoid feedback!</li>
+                <li>MIDI works on Chrome</li>
+                <li>Your computer keyboard plays notes too</li>
+                <li id="apple-tip">Touch the Play button if a video doesn't auto-start</li>
+            </ul>
+            <button id="join-button">Ready!</button>    
+            
+        </div>
+
+        <div id="view-controls">
+            Your Instrument: <select id="select-instrument"><select>
+            <button id="fullscreen-button">Fullscreen</button>    
+            <button id="disconnect-button">Disconnect</button>
+            -
+            Pen: <input type="color" id="doodle-color" value="#ff0000">
+            Width: <input type="number" id="doodle-width" min="1" max="20" value="5">
+            <button id="line-button">&minus;</button>    
+            <button id="square-button">&#9632;</button>
+            -
+            <button id="undo-button">Undo</button>    
+            <button id="cleaer-button">Clear</button>
+            
+        </div>
+        
+        <div id="standard">
+            <div id="user-list">
+                <div id="you" class="user-panel">
+                    <div id="your-name" class="user-name"></div>
+                </div>    
+            </div>
+
+            <div id="work-area">
+            </div>
+    
+        </div>
+
+        <div id="big-piano">
+        </div>
+
+        </div>
+
+
+        <div id="activity-log"></div>
+
+        <!--<script src="/socket.io/socket.io.js"></script>-->
+        <script src="https://webrtc.github.io/adapter/adapter-latest.js"></script>
+        <script src="/js/omgrtc.js"></script>
+        <script src="/js/omgservice.js"></script>
+        <script src="/apps/music/js/omusic_player.js"></script>
+        <script src="/apps/music/js/libs/peakmeter_basic.js"></script>
+        <script src="/apps/music/js/webmidi.js"></script>
+        <script src="/apps/music/js/piano_surface.js"></script>
+        <script src="chat-work-box-player.js"></script>
+        <script src="chat-work-box.js"></script>
+        <script src="chat.js"></script>
+        
+        <script>
+
+        var today = new Date()
+        var time = today.getHours() + ":" + today.getMinutes() + ":" + today.getSeconds() + "_"
+        var roomName = "demo" + time + Math.floor((Math.random() * 1000))
+        
+        var user
+        fetch("/user").then(data => data.json()).then(json => {
+            console.log(json)
+            if (json) {
+                // todo check to see if they've tried the demo 
+                // or if they're admin
+                
+                var params = omg.util.getPageParams()
+                if (params.room) {
+                    roomName = params.room
+                }
+            }
+        })
+
+        var userName = roomName
+        var userListEl = document.getElementById('user-list')
+
+        var rt = new OMGRealTime() //"https://openmedia.gallery/")
+        rt.acceptAllCalls = true
+
+        //!!!!! todo remove, testing only
+        rt.suppressLocalVideo = window.location.host.startsWith("localhost")
+
+        var activityLog = document.getElementById("activity-log")
+        var log = text => {
+            console.log(text)
+            activityLog.innerHTML = text + "<br>" + activityLog.innerHTML
+            //activityLog.innerHTML += text + "<br>"
+        }
+
+        rt.onlog = (text) => {
+            //log(text)
+        }
+
+        var musicChat
+
+        var you = {div: document.getElementById("you")}
+        var controls = document.getElementById("view-controls")
+        var joinButton = document.getElementById("join-button")
+        var joinArea = document.getElementById("join-area")
+        joinButton.onclick = () => {
+            if (!musicChat) {
+                musicChat = new OMGMusicChat(rt)
+                musicChat.setupPlayer()
+            }
+        
+            roomName = window.location.pathname + "?room=" + roomName
+            
+            document.getElementById("your-name").innerHTML = userName
+
+            rt.getUserMedia(video => {
+                you.div.appendChild(video)
+                you.video = video
+                rt.join(roomName, userName, {type: "CHAT"})
+            })
+            joinArea.style.display = "none"
+            controls.style.display = "block"
+            //disconnectButton.style.display = "block"
+            standard.style.display = "block"
+
+            this.workBoxDiv = document.getElementById("work-area")
+            this.workBox = new ChatWorkBox(rt, this.workBoxDiv)
+
+        }
+
+        var disconnectButton = document.getElementById("disconnect-button")
+        disconnectButton.onclick = () => {
+            //rt.closeConnections()
+            //rt.stopMedia()
+            rt.leave()
+            setTimeout(() => {window.location = window.location}, 250)
+        }
+    
+        rt.onjoined = (room) => {
+            musicChat.setupLocalUser(you)
+
+            console.log("onjoined!!!!!!")
+            disconnectButton.innerHTML = "Disconnect"
+            for (var user in room.users) {
+                if (!room.users[user].peerConnection) {
+                    rt.callUser(user)
+                }
+            }
+        }
+
+        
+        rt.onnewuser = (name, user) => {
+            log(name + " joined")
+            userEl = document.createElement("div")
+            userEl.className = "user-panel"
+            nameEl = document.createElement("div")
+            nameEl.className = "user-name"
+            nameEl.innerHTML = name
+            videoEl = user.video
+            userEl.appendChild(nameEl)
+            userEl.appendChild(videoEl)
+            userListEl.appendChild(userEl)
+            user.div = userEl
+
+            musicChat.setupUser(user)
+        }
+        
+        rt.onuserleft = (name, user) => {
+            log(name + " left")
+            userListEl.removeChild(user.div)
+        }
+
+        rt.onuserdisconnected = (name, user) => {
+            if (user.disconnected && user.peerConnection.connectionState !== "connected") {
+                user.div.style.display = "none"
+            }
+        }
+        rt.onuservideodisconnected = rt.onuserdisconnected
+
+        rt.onuserreconnected = (name, user) => {
+            user.div.style.display = "block"
+        }
+        
+        rt.ondisconnect = () => {
+            //connectedStatusEl.innerHTML = "not connected"
+            console.log("disconnected")
+            disconnectButton.innerHTML = "Disconnect."
+            //disconnectButton.style.display = "none"
+            //joinArea.style.display = "block"
+        };
+
+        var fullscreen = false
+        document.getElementById("fullscreen-button").onclick = (e) => {
+            if (fullscreen) {
+                document.exitFullscreen();
+            }
+            else {
+                document.body.requestFullscreen();
+            }
+            fullscreen = !fullscreen
+        }
+
+        
+
+        rt.oncommand = (data) => {
+            
+        }
+
+
+        if (navigator.userAgent.indexOf("iPhone") > -1 ||
+            navigator.userAgent.indexOf("iPad") > -1 ||
+            navigator.userAgent.indexOf("Mac OS X") > -1) {
+                document.getElementById("apple-tip").style.visibility = "visible"
+            }
+
+        
+        </script>
+    </body>
+</html>

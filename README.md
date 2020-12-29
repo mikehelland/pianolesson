@@ -1,0 +1,1 @@
+Uses WebMIDI and WebRTC to create an app for music teachers

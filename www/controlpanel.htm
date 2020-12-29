@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>bspoke.chat - Custom Chatrooms</title>
+<style>
+
+	body {
+		padding:0 5px;
+		margin:0px;
+	    background-color: #cccccc;
+	    font-family: Arial, Helvetica, sans-serif;
+		
+	}
+
+	.main-body {
+		padding: 1em;
+		background-color:white;
+		max-width:950px;
+		margin:auto;
+		
+	}
+	#top {
+		font-size: 36px;
+		font-weight:bold;
+	}
+	
+	#top-logo {
+		float:left;
+		padding-right: 8px;
+	}
+
+	h3 {
+		background-color: #eee;
+		padding: 3px;
+		border-bottom: 1px solid black;
+	}	
+
+	.clear-float {
+		float:clear;
+	}
+	li {
+		padding: 2px;
+	}
+
+	.product-img {
+		padding-left: 8px;
+		width:60%;
+		float:right;
+	}
+
+	#new-session-name {
+		width:350px;
+	}
+</style>
+
+	<link rel="stylesheet" href="/css/viewer.css" type="text/css" />
+</head>
+
+<body>
+<div class="main-body">
+
+<script src="/js/omgservice.js"></script>
+<script>
+//todo  logged in? Must
+</script>
+
+<img id="top-logo" src="/logo.png">
+
+<span id="top">Piano Lesson Room</span>
+<br>
+<i>Control Panel</i>
+
+<div class="clear-float">&nbsp;</div>
+
+<h3>Create a session</h3>
+
+<p>Enter a name for this session:</p>
+
+<input id="new-session-name" placeholder="eg. Susie Student, Tuesday 2pm"><button id="new-session-button">Create Session</button>
+<script>
+
+	var nameInput = document.getElementById("new-session-name")
+	var newButton = document.getElementById("new-session-button")
+	newButton.onclick = e => {
+		omg.server.post({type: "PIANOLESSON_SESSION", name: nameInput.value}, data => {
+			console.log(data)	
+		})
+	}
+
+</script>
+
+<h3>Sessions and materials</h3>
+
+<div class="feed-options">
+	<select id="filter-type">
+		 <option value="">All Types</option>
+		 <option value="PIANOLESSON_SESSION">Session</option>
+		 <option value="PIANOLESSON_WORKBOX">Work Box</option>
+		 <option value="IMAGE">Image</option>
+
+	</select>
+	 <input id="main-search-input" placeholder="Search">
+	 <button id="main-search-button">Search</button>
+
+	 <span class="search-info-terms"></span>
+</div>      
+<div id="search-things">
+<!--<div class="user-thing">
+</div>-->
+</div>
+
+<script src="/js/embedded_viewer.js"></script>
+
+<script>
+	var searchInput = document.getElementById("main-search-input")
+	var searchButton = document.getElementById("main-search-button")
+	var searchThings = document.getElementById("search-things")
+
+	var params
+	
+	var makeSearchParams = () => {
+		return {
+			resultList: searchThings,
+			users: "me", 
+			metaData: true,
+			viewerParams: {deleteButton: true, maxHeight: 320}
+		}
+	}
+	omg.getContext().then(context => {
+		omg.search(makeSearchParams(), true)
+	})
+
+</script>
+</div>
+</body>
+</html>

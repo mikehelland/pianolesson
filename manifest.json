@@ -1,0 +1,7 @@
+{
+    "activities": [
+		{"name": "Control Panel", "url": "controlpanel.htm"},
+        {"name": "Embedded Piano Lesson Session Viewer", "url": "embed-session.js", 
+            "className": "OMGEmbeddedViewerPIANOLESSON_SESSION", "embeds": ["PIANOLESSON_SESSION"]}
+	]
+}
