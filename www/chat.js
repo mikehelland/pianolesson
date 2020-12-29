@@ -102,7 +102,7 @@ OMGMusicChat.prototype.setupUser = function (user, local) {
 
     var volumeSlider = document.createElement("input")
     volumeSlider.type = "RANGE"
-    user.div.appendChild(volumeSlider)
+    //user.div.appendChild(volumeSlider)
     volumeSlider.onchange = e => {
         
         //todo shouldn't the player be able to handle this?

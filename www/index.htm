@@ -112,7 +112,7 @@
         rt.acceptAllCalls = true
 
         //!!!!! todo remove, only here because webcam indicator light is annoying
-        rt.suppressLocalVideo = window.location.host.startsWith("localhost")
+        //rt.suppressLocalVideo = window.location.host.startsWith("localhost")
 
         var activityLog = document.getElementById("activity-log")
         var log = text => {
@@ -142,6 +142,7 @@
             rt.getUserMedia(video => {
                 you.div.appendChild(video)
                 you.video = video
+                you.video.style.width = "25%"
                 rt.join(roomName, userName, {type: "CHAT"})
             })
             //joinArea.style.display = "none"
