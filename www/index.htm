@@ -90,7 +90,7 @@
         var userName
         omg.getContext().then(ctx => {
 
-            roomName = ctx.pageParams.t + ctx.pageParams.s
+            roomName = "t=" + encodeURIComponent(ctx.pageParams.t) + "&s=" + encodeURIComponent(ctx.pageParams.s)
             if (!ctx.user) {
                 // no user, go to student mode
                 userName = ctx.pageParams.s
@@ -135,7 +135,7 @@
                 musicChat.setupPlayer()
             }
         
-            roomName = window.location.pathname + "?room=" + roomName
+            roomName = window.location.pathname + "?" + roomName
             
             document.getElementById("your-name").innerHTML = userName
 
