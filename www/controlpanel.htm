@@ -30,6 +30,7 @@
 	}
 
 	h3 {
+		margin-top:26px;
 		background-color: #eee;
 		padding: 3px;
 		border-bottom: 1px solid black;
@@ -82,12 +83,25 @@
 	var nameInput = document.getElementById("new-session-name")
 	var newButton = document.getElementById("new-session-button")
 	newButton.onclick = e => {
-		omg.server.post({type: "PIANOLESSON_SESSION", name: nameInput.value}, data => {
+
+		var name = nameInput.value
+		var url = "https://" + window.location.host + omg.apps.pianolesson.path + 
+				"?t=" + encodeURIComponent(omg.user.username) + "&s=" + encodeURIComponent(name)
+
+		var thing = {type: "PIANOLESSON_SESSION", name: name, link: url}
+
+		omg.server.post(thing, data => {
 			console.log(data)	
 		})
 	}
 
 </script>
+
+<h3>Add Materials</h3>
+
+<p>
+	Drad and drop anything here.
+</p>
 
 <h3>Sessions and materials</h3>
 

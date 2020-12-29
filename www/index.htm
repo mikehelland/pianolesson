@@ -5,183 +5,51 @@
         <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate" />
         <meta http-equiv="Pragma" content="no-cache" />
         <meta http-equiv="Expires" content="0" />
+        <link rel="stylesheet" href="chat.css" type="text/css" />
         <style>
-            html {height:100%;
-                padding:0px;
-                margin:0px;
-                }
-            body {
-                height:100%;
-                padding:0px;
-                margin:0px;
-                /*background: rgba(0, 0, 0, 0) linear-gradient(135deg, rgb(249, 241, 232) 0%, rgb(205, 214, 227) 100%) repeat scroll 0% 0%;*/
-                background: rgba(0, 0, 0, 0) linear-gradient(135deg, 
-                rgb(90, 87, 83) 0%, rgb(50, 53, 56) 100%) repeat scroll 0% 0%;
-                color:white;
-                font-family: Arial, Helvetica, sans-serif;
-
-            }
-            #user-list video {
-                width: 100%;
-            }
-            #user-list {
-                    display: flex;
-                    flex-wrap: wrap;
-                }
-
-            @media all and (orientation:landscape) {
-                #user-list .user-panel {
-                    position: relative;
-                    width: 33%;
-                }
-    
-            }
-
-            @media all and (orientation:portrait) {
-                #user-list .user-panel {
-                    position: relative;
-                    width: 50%;
-                }
-            }
-
             #join-area {
-                margin:auto;
-                font-size:30px;
-                width: 60%;
-                left: 25%;
-            }
-
-            #room-name-input, #user-name-input ,#join-button {
-                font-size:28px;
-                width:100%;
-                box-sizing: border-box;
-            }
-            #activity-log {
-                font-size: 12px;
-                font-family:'Courier New', Courier, monospace;
                 display:none;
             }
-
-            /*#disconnect-button {
-                display:none;
-                margin:auto;
-                margin-bottom: 12px;
-            }*/
-
-            #view-controls {
-                text-align: center;
-                margin:auto;
-                display:none;                
-            }
-
-            select, button {
-                background-color: #404040;
-                color:white;
-                border: 1px solid white;
-                border-radius: 3px;
-                padding:5px;
-                cursor:pointer
-            }
-            #disconnect-button, #fullscreen-button {
-                width: 100px;
-                padding:6px;
-            }
-            .user-name {
-                position:absolute;
-                background-color: #202020;
-                color:#c0c0c0;
-            }
-
-            #main-body {
-                display:flex;
-                flex-direction: column;
-                padding:8px;
-                height: 100%;
-                box-sizing: border-box;
-            }
-            #standard {
-                display: none;
-                flex-grow: 1;
-            }
-
-            #join-area li {
-                font-size: 16px;
-                margin-bottom:8px;
-            }
-
-            #apple-tip {
-                visibility:hidden;
-            }
-
-            .readonly-text, .readonly-text-room {
-                padding:8px;
-                margin-top: 24px;
-                margin-bottom: 24px;
-                width:100%;
-                box-sizing: border-box;
-                border:1px solid white;
-            }
-            .readonly-text-room {
-                margin-top: 31px;
-            }
-
-            .volume-meter {
-                width: 10px;
-                bottom: 38px;
-                position: absolute;
-                right:0px;
-                top:0px;
-            }
-            .user-instrument {
-                padding: 7px;
-                position: absolute;
-                top: 0px;
-                right: 0;
-            }
-
-            .select-instrument {
-                position: absolute;
-                top: 0px;
-                left: 0;
-                opacity: 0.6;
-                padding:3px;
-            }
-
-            .piano-canvas {
-                width: 100%;
-                height:50px;
-                position: relative;
-            }
-
-            #big-piano {
-                position: relative;
+            #standard, #view-controls {
+                display:block;
             }
         </style>
     </head>
     <body>
         <div id="main-body">
         <div id="join-area">
-            <div id="room-name-caption">Room: </div> 
+            <!--<div id="room-name-caption">Room: </div> 
             <p id="room-name-area"><select id="room-name-input"> 
                     <option>public</option>
                 </select>
             </p>
             <div id="user-name-caption">Screen name: </div> 
             <p id="user-name-area"><input id="user-name-input"></p>
-            <button id="join-button">Join</button>    
-            <p>Tips:</p>
+        -->
+            <p id="tips-caption">Tips:</p>
             <ul>
-                <li>Wear Headphones! Feedback, bad!</li>
-                <li>Your computer keyboard plays notes</li>
-                <li>MIDI only works on Chrome</li>
+                <li>Wear Headphones to avoid feedback!</li>
+                <li>MIDI works on Chrome</li>
+                <li>Your computer keyboard plays notes too</li>
                 <li id="apple-tip">Touch the Play button if a video doesn't auto-start</li>
             </ul>
+            <button id="join-button">Ready!</button>    
+            
         </div>
 
         <div id="view-controls">
             Your Instrument: <select id="select-instrument"><select>
             <button id="fullscreen-button">Fullscreen</button>    
             <button id="disconnect-button">Disconnect</button>
+            -
+            Pen: <input type="color" id="doodle-color" value="#ff0000">
+            Width: <input type="number" id="doodle-width" min="1" max="20" value="5">
+            <button id="line-button">&minus;</button>    
+            <button id="square-button">&#9632;</button>
+            -
+            <button id="undo-button">Undo</button>    
+            <button id="cleaer-button">Clear</button>
+            
         </div>
         
         <div id="standard">
@@ -190,6 +58,10 @@
                     <div id="your-name" class="user-name"></div>
                 </div>    
             </div>
+
+            <div id="work-area">
+            </div>
+    
         </div>
 
         <div id="big-piano">
@@ -197,70 +69,50 @@
 
         </div>
 
+
         <div id="activity-log"></div>
 
         <!--<script src="/socket.io/socket.io.js"></script>-->
         <script src="https://webrtc.github.io/adapter/adapter-latest.js"></script>
         <script src="/js/omgrtc.js"></script>
+        <script src="/js/omgservice.js"></script>
         <script src="/apps/music/js/omusic_player.js"></script>
         <script src="/apps/music/js/libs/peakmeter_basic.js"></script>
         <script src="/apps/music/js/webmidi.js"></script>
         <script src="/apps/music/js/piano_surface.js"></script>
+        <script src="chat-work-box-player.js"></script>
+        <script src="chat-work-box.js"></script>
         <script src="chat.js"></script>
         
         <script>
-
-        var roomName
-        window.location.search.substr(1).split("&").forEach(param => {
-            if (param.startsWith("room=")) {
-                roomName = param.split("=")[1]
-            }
-        })
-
-        if (roomName) {
-            document.getElementById("room-name-area").innerHTML = 
-                "<div class='readonly-text-room'>" + roomName + "</div>"
-        }
-        else {
-            var roomSelect = document.getElementById("room-name-input")
-        }
-        
-        var user
-        fetch("/user").then(data => data.json()).then(json => {
-            if (json) {
-                var userOption = document.createElement("option")
-                userOption.innerHTML = "My Room (" + json.username + ")"
-                roomSelect.appendChild(userOption)
-                userNameInput.value = json.username.trim()
-                userNameInput.readOnly = true
-                user = json
-
-                document.getElementById("user-name-area").innerHTML = 
-                        "<div class='readonly-text'>" + json.username + "</div>"
-                
-            }
-            if (!roomName) {
-                fetch("/rooms").then(data => data.json()).then(json => {
-                    console.log(json)
-                    if (json) {
-                        json.forEach(room => {
-                            if (room.name !== "public" && room.thing && room.thing.type === "THING") {
-                                var option = document.createElement("option")
-                                option.innerHTML = room.name
-                                roomSelect.appendChild(option)
-                            }
-                        })
-                    }
-                }).catch(e => console.log(e))
-            }
-        })
-
-        var userNameInput = document.getElementById("user-name-input")    
+        var isTeacher = false
+        var roomName = ""
         var userName
+        omg.getContext().then(ctx => {
+
+            roomName = ctx.pageParams.t + ctx.pageParams.s
+            if (!ctx.user) {
+                // no user, go to student mode
+                userName = ctx.pageParams.s
+            }
+            else if (ctx.user.username === ctx.pageParams.t) {
+                isTeacher = true
+                userName = ctx.pageParams.t
+            }
+            else {
+                console.warn("hello?")
+                // maybe a student is logged in? only teachers should have logins
+            }
+            join()
+        })
+
         var userListEl = document.getElementById('user-list')
 
         var rt = new OMGRealTime() //"https://openmedia.gallery/")
         rt.acceptAllCalls = true
+
+        //!!!!! todo remove, only here because webcam indicator light is annoying
+        rt.suppressLocalVideo = window.location.host.startsWith("localhost")
 
         var activityLog = document.getElementById("activity-log")
         var log = text => {
@@ -277,25 +129,14 @@
 
         var you = {div: document.getElementById("you")}
         var controls = document.getElementById("view-controls")
-        var joinButton = document.getElementById("join-button")
-        var joinArea = document.getElementById("join-area")
-        joinButton.onclick = () => {
-
+        var join = () => {
             if (!musicChat) {
                 musicChat = new OMGMusicChat(rt)
                 musicChat.setupPlayer()
             }
         
-            // we there's no select box, that means we have a roomName
-            if (roomSelect) {
-                roomName = roomSelect.value
-                if (roomSelect.selectedIndex === 1 && user) {
-                    roomName = user.username
-                }
-            }
             roomName = window.location.pathname + "?room=" + roomName
-            userName = userNameInput.value || (Math.round(Math.random() * 100000) + "")
-
+            
             document.getElementById("your-name").innerHTML = userName
 
             rt.getUserMedia(video => {
@@ -303,10 +144,14 @@
                 you.video = video
                 rt.join(roomName, userName, {type: "CHAT"})
             })
-            joinArea.style.display = "none"
-            controls.style.display = "block"
+            //joinArea.style.display = "none"
+            //controls.style.display = "block"
             //disconnectButton.style.display = "block"
-            standard.style.display = "block"
+            //standard.style.display = "block"
+
+            this.workBoxDiv = document.getElementById("work-area")
+            this.workBox = new ChatWorkBox(rt, this.workBoxDiv)
+
         }
 
         var disconnectButton = document.getElementById("disconnect-button")
@@ -393,6 +238,8 @@
             navigator.userAgent.indexOf("Mac OS X") > -1) {
                 document.getElementById("apple-tip").style.visibility = "visible"
             }
+
+        
         </script>
     </body>
 </html>

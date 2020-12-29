@@ -295,8 +295,8 @@ OMemePlayer.prototype.animateRectangle = function (doodle, nowInLoop) {
 	
 	this.context.lineWidth = doodle.width;
 	this.context.strokeStyle = doodle.color; 
-    this.context.strokeRect(doodle.start[0] * this.canvas.width, doodle.start[1] * this.canvas.height, 
-        doodle.end[0] * this.canvas.width, doodle.end[1] * this.canvas.height) 
+    this.context.strokeRect(doodle.x * this.canvas.width, doodle.y * this.canvas.height, 
+        doodle.w * this.canvas.width, doodle.h * this.canvas.height) 
 }
 
 OMemePlayer.prototype.sizeCanvas = function () {

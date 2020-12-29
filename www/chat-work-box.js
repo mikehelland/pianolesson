@@ -13,16 +13,13 @@ function ChatWorkBox(rt, div) {
           }
         }
       }
-    this.mode = "SQUARE"
-    this.remoteMode = "SQUARE"
+    this.mode = "DOODLE"
+    this.remoteMode = "DOODLE"
 
-    this.colorPicker = document.getElementById("doodle-color")
-    this.sizePicker = document.getElementById("doodle-width")
-    this.colorPicker.onchange = e => this.setPen()
-	this.sizePicker.onchange = e => this.setPen()
-    
+	this.setupControls()
+
     this.setPen()
-    this.setRemotePen("red", 5)
+    this.setRemotePen({color: "red", width: 5, type: "DOODLE"})
 
     this.player = new OMemePlayer({div})
 
@@ -46,18 +43,25 @@ ChatWorkBox.prototype.setPen = function () {
             xyt: []
         }
     }
-    else if (this.mode === "SQUARE") {
+    else if (this.mode === "RECTANGLE") {
         this.preview = {
             type: "RECTANGLE", 
             color: this.colorPicker.value, 
             width: this.sizePicker.value,
-            end: [0, 0]
+            x:0, y:0, w:0, h:0
         }
     }
     this.send("doodleSet", {type: this.preview.type, color: this.colorPicker.value, width: this.sizePicker.value})
 }
 
 ChatWorkBox.prototype.setRemotePen = function (data) {
+	if (data) {
+		this.lastRemotePen = data
+	}
+	else {
+		data = this.lastRemotePen
+	}
+console.log(data)
     if (data.type === "DOODLE") {
         this.remotePreview = {
             type: "DOODLE", 
@@ -66,12 +70,12 @@ ChatWorkBox.prototype.setRemotePen = function (data) {
             xyt: []
         }
     }
-    else if (data.type === "SQUARE") {
+    else if (data.type === "RECTANGLE") {
         this.remotePreview = {
             type: "RECTANGLE", 
             color: data.color, 
             width: data.width,
-            end: [0, 0]
+            x:0, y:0, w:0, h:0
         }
     }
 }
@@ -217,7 +221,7 @@ function MemeCanvasEventHandler(memeCreator) {
 		else if (this.memeCreator.mode === "DOODLE") {
 			this.doodleStartTouch(x, y, tool);
         }
-        else if (this.memeCreator.mode === "SQUARE") {
+        else if (this.memeCreator.mode === "RECTANGLE") {
 			this.squareStartTouch(x, y, tool);
 		}
     };
@@ -242,10 +246,10 @@ function MemeCanvasEventHandler(memeCreator) {
 		x = (x - player.horizontalPadding / 2) / (player.canvas.clientWidth - player.horizontalPadding)
 		y = (y - player.verticalPadding / 2) / (player.canvas.clientHeight - player.verticalPadding)
 		
-		if (this.memeCreator.preview) {
+		/*if (this.memeCreator.preview) {
 			this.memeCreator.preview.x = x;
 			this.memeCreator.preview.y = y;
-		}
+		}*/
 
 		if (tool.started) {
             if (this.memeCreator.mode === "DIALOG"){
@@ -256,7 +260,7 @@ function MemeCanvasEventHandler(memeCreator) {
 			else if (this.memeCreator.mode === "DOODLE"){
 				tool.doodleTouchMove(x, y, tool);
             }
-            else if (this.memeCreator.mode === "SQUARE"){
+            else if (this.memeCreator.mode === "RECTANGLE"){
 				tool.squareTouchMove(x, y, tool);
 			}
 		}
@@ -281,7 +285,7 @@ function MemeCanvasEventHandler(memeCreator) {
 			else if (this.memeCreator.mode === "DOODLE"){
 				tool.doodleTouchEnd(x, y);
             }
-            else if (this.memeCreator.mode === "SQUARE"){
+            else if (this.memeCreator.mode === "RECTANGLE"){
 				tool.squareTouchEnd(x, y);
 			}
 			
@@ -325,7 +329,8 @@ MemeCanvasEventHandler.prototype.doodleTouchEnd = function (x, y) {
 
 MemeCanvasEventHandler.prototype.squareStartTouch = function (x, y, tool) {
 
-	this.memeCreator.preview.start = [x, y];	
+	this.memeCreator.preview.x = x
+	this.memeCreator.preview.y = y	
 
     let mc = this.memeCreator
 	if (mc.meme.layers.indexOf(mc.preview) === -1) {
@@ -334,7 +339,8 @@ MemeCanvasEventHandler.prototype.squareStartTouch = function (x, y, tool) {
     mc.send("squareStart", {x, y})
 };
 MemeCanvasEventHandler.prototype.squareTouchMove = function (x, y, tool){
-    this.memeCreator.preview.end = [x - this.memeCreator.preview.start[0], y - this.memeCreator.preview.start[1]];
+	this.memeCreator.preview.w = x - this.memeCreator.preview.x
+	this.memeCreator.preview.h = y - this.memeCreator.preview.y
     this.memeCreator.send("squareMove", {x, y})
 };
 MemeCanvasEventHandler.prototype.squareTouchEnd = function (x, y) {
@@ -377,23 +383,25 @@ ChatWorkBox.prototype.setupSocketEvents = function () {
         this.remotePreview.xyt.push([-1, -1, 0]);
     })
     this.rt.on("doodleSet", data => {
+		console.log("remote pen set", data)
         this.setRemotePen(data)
     })
 
     this.rt.on("squareStart", data => {
 
-        this.memeCreator.preview.start = [data.x, data.y];	
+		this.remotePreview.x = data.x
+		this.remotePreview.y = data.y
     
-        let mc = this.memeCreator
-        if (mc.meme.layers.indexOf(mc.preview) === -1) {
-            mc.meme.layers.push(mc.preview)
+        if (this.meme.layers.indexOf(this.remotePreview) === -1) {
+            this.meme.layers.push(this.remotePreview)
         }
     })
-    this.rt.on("squareStart", data => {
-        this.memeCreator.preview.end = [x - this.memeCreator.preview.start[0], y - this.memeCreator.preview.start[1]];
+    this.rt.on("squareMove", data => {
+		this.remotePreview.w = data.x - this.remotePreview.x
+		this.remotePreview.h = data.y - this.remotePreview.y
     })
     this.rt.on("squareEnd", data => {
-        this.memeCreator.setRemotePen()
+        this.setRemotePen()
     })
     
 }
@@ -401,4 +409,24 @@ ChatWorkBox.prototype.setupSocketEvents = function () {
 ChatWorkBox.prototype.send = function (action, data) {
     data.room = true
     this.rt.emit(action, data)
+}
+
+ChatWorkBox.prototype.setupControls = function () {
+
+	this.lineButton = document.getElementById("line-button")
+	this.lineButton.onclick = e => {
+		this.mode = "DOODLE"
+		this.setPen()
+	}
+	this.squareButton = document.getElementById("square-button")
+	this.squareButton.onclick = e => {
+		this.mode = "RECTANGLE"
+		this.setPen()
+	}
+    
+    this.colorPicker = document.getElementById("doodle-color")
+    this.sizePicker = document.getElementById("doodle-width")
+    this.colorPicker.onchange = e => this.setPen()
+	this.sizePicker.onchange = e => this.setPen()
+	
 }
