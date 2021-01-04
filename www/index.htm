@@ -112,7 +112,7 @@
         rt.acceptAllCalls = true
 
         //!!!!! todo remove, only here because webcam indicator light is annoying
-        //rt.suppressLocalVideo = window.location.host.startsWith("localhost")
+        rt.suppressLocalVideo = true //window.location.host.startsWith("localhost")
 
         var activityLog = document.getElementById("activity-log")
         var log = text => {
