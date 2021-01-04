@@ -154,7 +154,7 @@ ChatWorkBox.prototype.setupDropBackground = function () {
 }
 
 
-ChatWorkBox.prototype.addBackground = function (thing, resize) {
+ChatWorkBox.prototype.addBackground = function (thing, resize, fromRemote) {
 
 	this.meme.background = {thing} 
 	
@@ -165,6 +165,10 @@ ChatWorkBox.prototype.addBackground = function (thing, resize) {
 			this.player.sizeCanvas()
 		}
 	})
+
+	if (!fromRemote) {
+		this.send("setBackground", thing)
+	}
 }
 
 function MemeCanvasEventHandler(memeCreator) {
@@ -402,7 +406,12 @@ ChatWorkBox.prototype.setupSocketEvents = function () {
     })
     this.rt.on("squareEnd", data => {
         this.setRemotePen()
-    })
+	})
+	
+	this.rt.on("setBackground", data => {
+        this.addBackground(data, true, true)
+	})
+	
     
 }
 
