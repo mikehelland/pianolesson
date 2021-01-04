@@ -112,7 +112,7 @@
         rt.acceptAllCalls = true
 
         //!!!!! todo remove, only here because webcam indicator light is annoying
-        rt.suppressLocalVideo = true //window.location.host.startsWith("localhost")
+        rt.suppressLocalVideo = window.location.host.startsWith("localhost")
 
         var activityLog = document.getElementById("activity-log")
         var log = text => {
@@ -150,9 +150,6 @@
             //disconnectButton.style.display = "block"
             //standard.style.display = "block"
 
-            this.workBoxDiv = document.getElementById("work-area")
-            this.workBox = new ChatWorkBox(rt, this.workBoxDiv)
-
         }
 
         var disconnectButton = document.getElementById("disconnect-button")
@@ -163,6 +160,9 @@
             setTimeout(() => {window.location = window.location}, 250)
         }
     
+        var workBoxDiv = document.getElementById("work-area")
+        var workBox
+
         rt.onjoined = (room) => {
             musicChat.setupLocalUser(you)
 
@@ -172,6 +172,10 @@
                 if (!room.users[user].peerConnection) {
                     rt.callUser(user)
                 }
+            }
+
+            if (!workBox) {
+                workBox = new ChatWorkBox(rt, workBoxDiv)
             }
         }
 
