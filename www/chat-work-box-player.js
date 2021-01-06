@@ -54,7 +54,7 @@ OMemePlayer.prototype.load = function(meme) {
 
 	this.loaded = true
 	
-	this.animate();
+	this.draw();
 	
 	if (this.onload) {
 		this.onload()
@@ -91,7 +91,7 @@ OMemePlayer.prototype.loadPreview = function (meme) {
 }
 
 
-OMemePlayer.prototype.animate = function() {	
+OMemePlayer.prototype.draw = function() {	
 	
 	this.drawBackground();
 	
@@ -138,9 +138,9 @@ OMemePlayer.prototype.animate = function() {
         this.context.globalAlpha = 1
     }
 		
-	requestAnimationFrame(() => {
+	/*requestAnimationFrame(() => {
 		this.animate();
-	});
+	});*/
 }
 
 
@@ -237,11 +237,13 @@ OMemePlayer.prototype.loadBackground = function(onload) {
 	if (background && background.thing && background.thing.url) {
 		this.backgroundImg = new Image()
 		this.backgroundImg.onload = () => {
+			this.draw()
 			if (onload) onload(this.backgroundImg)
 		}
 		this.backgroundImg.src = background.thing.url
 	}
 	else {
+		this.draw()
 		if (onload) onload(this.backgroundImg)
 	}
 }

@@ -29,7 +29,7 @@ function ChatWorkBox(rt, div) {
     this.setupCanvasEvents()
     this.setupSocketEvents()
 
-    this.player.animate()
+    this.player.draw()
 }
 
 // Dec 27, 2020, copied, pasted, and trimmed from meme creator
@@ -228,6 +228,8 @@ function MemeCanvasEventHandler(memeCreator) {
         else if (this.memeCreator.mode === "RECTANGLE") {
 			this.squareStartTouch(x, y, tool);
 		}
+
+		this.player.draw()
     };
 
 	this.mousemove = ev => {
@@ -268,6 +270,8 @@ function MemeCanvasEventHandler(memeCreator) {
 				tool.squareTouchMove(x, y, tool);
 			}
 		}
+
+		this.player.draw()
 	};
 
 	this.mouseup = (ev) => {
@@ -294,6 +298,8 @@ function MemeCanvasEventHandler(memeCreator) {
 			}
 			
 		}
+
+		this.player.draw()
 	};
 }
 
@@ -438,4 +444,22 @@ ChatWorkBox.prototype.setupControls = function () {
     this.colorPicker.onchange = e => this.setPen()
 	this.sizePicker.onchange = e => this.setPen()
 	
+	this.undoButton = document.getElementById("work-box-undo-button")
+    this.clearButton = document.getElementById("work-box-clear-button")
+    this.undoButton.onclick = e => {
+		this.setPen()
+		if (this.meme.layers.length > 0) {
+			this.meme.layers.pop()
+		}
+		else if (this.lastCleared) {
+			this.meme.layers = this.lastCleared
+		}
+		this.player.draw()
+	}
+	this.clearButton.onclick = e => {
+		this.setPen()
+		this.lastCleared = JSON.parse(JSON.stringify(this.meme.layers))
+		this.meme.layers = []
+		this.player.draw()
+	}
 }

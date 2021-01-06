@@ -47,8 +47,8 @@
             <button id="line-button">&minus;</button>    
             <button id="square-button">&#9632;</button>
             -
-            <button id="undo-button">Undo</button>    
-            <button id="cleaer-button">Clear</button>
+            <button id="work-box-undo-button">Undo</button>    
+            <button id="work-box-clear-button">Clear</button>
             
         </div>
         
@@ -134,10 +134,6 @@
         var you = {div: document.getElementById("you")}
         var controls = document.getElementById("view-controls")
         var join = () => {
-            if (!musicChat) {
-                musicChat = new OMGMusicChat(rt)
-                musicChat.setupPlayer()
-            }
         
             roomName = window.location.pathname + "?" + roomName
             
@@ -168,6 +164,10 @@
         var workBox
 
         rt.onjoined = (room) => {
+            if (!musicChat) {
+                musicChat = new OMGMusicChat(rt)
+                musicChat.setupPlayer()
+            }
             musicChat.setupLocalUser(you)
 
             console.log("onjoined!!!!!!")
