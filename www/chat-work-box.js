@@ -385,7 +385,8 @@ ChatWorkBox.prototype.setupCanvasEvents = function () {
 
 ChatWorkBox.prototype.setupSocketEvents = function () {
     this.rt.on("cursorMove", data => {
-        this.remoteCursor.x = data.x
+		this.remoteCursor.active = data.x !== -1
+		this.remoteCursor.x = data.x
 		this.remoteCursor.y = data.y
 		this.player.draw()
 	})
