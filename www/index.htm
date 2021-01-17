@@ -13,6 +13,22 @@
             #standard, #view-controls {
                 display:block;
             }
+
+            #error-log-box {
+                display:none;
+                position:fixed;
+                right:0px;
+                top:40px;
+                width:33%;
+                background-color: #202020;
+                padding:4px;
+                min-height: 300px;
+            }
+            #error-log {
+                background-color: #EEEEEE;
+                color:black;
+                padding:4px;
+            }
         </style>
     </head>
     <body>
@@ -49,6 +65,8 @@
             -
             <button id="work-box-undo-button">Undo</button>    
             <button id="work-box-clear-button">Clear</button>
+            -
+            <button id="error-log-button">Error Log</button>
             
         </div>
         
@@ -70,7 +88,35 @@
         </div>
 
 
+        <div id="error-log-box"><pre id="error-log"></pre></div>
         <div id="activity-log"></div>
+
+        <script>
+
+        var isErrorLogShowing = false
+        var errorLogButton = document.getElementById("error-log-button")
+        var errorLogBox = document.getElementById("error-log-box")
+        var errorLog = document.getElementById("error-log")
+
+        var logError = message => {
+            errorLogButton.style.color = "red"
+            var div = document.createElement("div")
+            div.innerHTML = message
+            errorLog.appendChild(div)
+        }
+
+        window.onerror = e => {
+            logError(e)
+            return true
+        }
+
+        errorLogButton.onclick = e => {
+            errorLogBox.style.display = isErrorLogShowing ? "none" : "block"
+            isErrorLogShowing = !isErrorLogShowing
+        }
+
+        </script>
+
 
         <!--<script src="/socket.io/socket.io.js"></script>-->
         <script src="https://webrtc.github.io/adapter/adapter-latest.js"></script>
@@ -107,6 +153,9 @@
                 console.warn("hello?")
                 // maybe a student is logged in? only teachers should have logins
             }
+            musicChat = new OMGMusicChat(rt)
+            musicChat.setupPlayer()
+
             join()
         })
 
@@ -164,13 +213,10 @@
         var workBox
 
         rt.onjoined = (room) => {
-            if (!musicChat) {
-                musicChat = new OMGMusicChat(rt)
-                musicChat.setupPlayer()
-            }
+            console.log("onjoined!!!!!!")
+            
             musicChat.setupLocalUser(you)
 
-            console.log("onjoined!!!!!!")
             disconnectButton.innerHTML = "Disconnect"
             for (var user in room.users) {
                 if (!room.users[user].peerConnection) {
@@ -185,6 +231,7 @@
 
         
         rt.onnewuser = (name, user) => {
+            console.log(name + "joined")
             log(name + " joined")
             userEl = document.createElement("div")
             userEl.className = "user-panel"

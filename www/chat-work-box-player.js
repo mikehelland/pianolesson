@@ -10,8 +10,9 @@ function OMemePlayer(config) {
 	}
 
 	this.config = config
+	var div = config.div
 
-	var div = config.div;
+	this.cursors = []
 	
 	var sceneCanvas = document.createElement("canvas")
 	this.canvas = sceneCanvas
@@ -137,7 +138,19 @@ OMemePlayer.prototype.draw = function() {
         }
         this.context.globalAlpha = 1
     }
-		
+	
+	for (this._drawCur of this.cursors) {
+		if (this._drawCur.active) {
+			this.context.globalAlpha = 0.5
+        	this.context.fillStyle = this._drawCur.color
+			this.context.beginPath()
+			this.context.arc(this._drawCur.x * this.context.canvas.width, 
+							this._drawCur.y * this.context.canvas.height, 20, 0, Math.PI*2)
+			this.context.fill()
+			this.context.globalAlpha = 1
+		}
+
+	}
 	/*requestAnimationFrame(() => {
 		this.animate();
 	});*/

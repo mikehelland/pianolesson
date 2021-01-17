@@ -23,7 +23,12 @@ function ChatWorkBox(rt, div) {
 
     this.player = new OMemePlayer({div})
 
-    this.player.load(this.meme)
+	this.player.load(this.meme)
+	
+	this.cursor = {color: "red"}
+	this.remoteCursor = {color: "green"}
+	this.player.cursors.push(this.cursor)
+	this.player.cursors.push(this.remoteCursor)
 
     this.setupDropBackground()
     this.setupCanvasEvents()
@@ -171,10 +176,10 @@ ChatWorkBox.prototype.addBackground = function (thing, resize, fromRemote) {
 	}
 }
 
-function MemeCanvasEventHandler(memeCreator) {
-	this.memeCreator = memeCreator;
+function MemeCanvasEventHandler(mc) {
+	this.memeCreator = mc;
 
-	var player = memeCreator.player
+	var player = mc.player
 	this.player = player
 	var tool = this;
 	this.started = false;
@@ -217,15 +222,17 @@ function MemeCanvasEventHandler(memeCreator) {
 	this.start = (x, y) => {
 		x = (x - player.horizontalPadding / 2) / (player.canvas.clientWidth - player.horizontalPadding)
 		y = (y - player.verticalPadding / 2) / (player.canvas.clientHeight - player.verticalPadding)
+
+		mc.cursor.active = false
 		
 		tool.started = true;
-		if (this.memeCreator.mode === "DIALOG"){
+		if (mc.mode === "DIALOG"){
 			this.dialogStartTouch(x, y)
 		}
-		else if (this.memeCreator.mode === "DOODLE") {
+		else if (mc.mode === "DOODLE") {
 			this.doodleStartTouch(x, y, tool);
         }
-        else if (this.memeCreator.mode === "RECTANGLE") {
+        else if (mc.mode === "RECTANGLE") {
 			this.squareStartTouch(x, y, tool);
 		}
 
@@ -239,37 +246,39 @@ function MemeCanvasEventHandler(memeCreator) {
 		tool.move(x, y);
 	}
 	this.mouseout = (ev) => {
-		if (this.memeCreator.mode === "DIALOG" || this.memeCreator.mode === "DOODLE") {
+		if (mc.mode === "DIALOG" || mc.mode === "DOODLE") {
 			if (player.preview) {
 				player.preview.x = -1;
 				player.preview.y = -1;
 			}
 		}
-		
+		mc.cursor.active = false
+		this.player.draw()		
 	};
 
 	this.move = (x, y) => {
 		x = (x - player.horizontalPadding / 2) / (player.canvas.clientWidth - player.horizontalPadding)
 		y = (y - player.verticalPadding / 2) / (player.canvas.clientHeight - player.verticalPadding)
 		
-		/*if (this.memeCreator.preview) {
-			this.memeCreator.preview.x = x;
-			this.memeCreator.preview.y = y;
-		}*/
-
 		if (tool.started) {
-            if (this.memeCreator.mode === "DIALOG"){
-				this.memeCreator.preview.x = x
-				this.memeCreator.preview.y = y
-				this.memeCreator.preview.xyt.push([x, y, Date.now() - this.loopCounter])
+            if (mc.mode === "DIALOG"){
+				mc.preview.x = x
+				mc.preview.y = y
+				mc.preview.xyt.push([x, y, Date.now() - this.loopCounter])
 			}
-			else if (this.memeCreator.mode === "DOODLE"){
+			else if (mc.mode === "DOODLE"){
 				tool.doodleTouchMove(x, y, tool);
             }
-            else if (this.memeCreator.mode === "RECTANGLE"){
+            else if (mc.mode === "RECTANGLE"){
 				tool.squareTouchMove(x, y, tool);
 			}
 		}
+		else {
+			mc.cursor.active = true
+			mc.cursor.x = x
+			mc.cursor.y = y
+			mc.send("cursorMove", {x, y})
+		}	
 
 		this.player.draw()
 	};
@@ -286,19 +295,20 @@ function MemeCanvasEventHandler(memeCreator) {
 		
 		if (tool.started) {
 			tool.started = false;
-			if (this.memeCreator.mode === "DIALOG"){
-				this.memeCreator.preview.xyt.push([x, y, Date.now() - tool.loopCounter])
-				this.memeCreator.preview.xyt.push(["stop", "stop", Date.now() - tool.loopCounter])
+			if (mc.mode === "DIALOG"){
+				mc.preview.xyt.push([x, y, Date.now() - tool.loopCounter])
+				mc.preview.xyt.push(["stop", "stop", Date.now() - tool.loopCounter])
 			}
-			else if (this.memeCreator.mode === "DOODLE"){
+			else if (mc.mode === "DOODLE"){
 				tool.doodleTouchEnd(x, y);
             }
-            else if (this.memeCreator.mode === "RECTANGLE"){
+            else if (mc.mode === "RECTANGLE"){
 				tool.squareTouchEnd(x, y);
 			}
 			
 		}
-
+		mc.cursor.active = true
+		
 		this.player.draw()
 	};
 }
@@ -374,27 +384,37 @@ ChatWorkBox.prototype.setupCanvasEvents = function () {
 }
 
 ChatWorkBox.prototype.setupSocketEvents = function () {
-    this.rt.on("doodleStart", data => {
+    this.rt.on("cursorMove", data => {
+        this.remoteCursor.x = data.x
+		this.remoteCursor.y = data.y
+		this.player.draw()
+	})
+	
+	this.rt.on("doodleStart", data => {
         this.remotePreview.x = data.x
         this.remotePreview.y = data.y
  
         this.remotePreview.xyt.push([data.x, data.y, 0]);	
         if (this.meme.layers.indexOf(this.remotePreview) === -1) {
             this.meme.layers.push(this.remotePreview)
-        }    
+		}
+		this.player.draw()
     })
     this.rt.on("doodleMove", data => {
         this.remotePreview.x = data.x
         this.remotePreview.y = data.y
  
-        this.remotePreview.xyt.push([data.x, data.y, 0]);	
+		this.remotePreview.xyt.push([data.x, data.y, 0])
+		this.player.draw()
     })
     this.rt.on("doodleEnd", data => {
-        this.remotePreview.xyt.push([-1, -1, 0]);
+		this.remotePreview.xyt.push([-1, -1, 0]);
+		this.player.draw()
     })
     this.rt.on("doodleSet", data => {
 		console.log("remote pen set", data)
-        this.setRemotePen(data)
+		this.setRemotePen(data)
+		this.player.draw()
     })
 
     this.rt.on("squareStart", data => {
@@ -404,21 +424,23 @@ ChatWorkBox.prototype.setupSocketEvents = function () {
     
         if (this.meme.layers.indexOf(this.remotePreview) === -1) {
             this.meme.layers.push(this.remotePreview)
-        }
+		}
+		this.player.draw()
     })
     this.rt.on("squareMove", data => {
 		this.remotePreview.w = data.x - this.remotePreview.x
 		this.remotePreview.h = data.y - this.remotePreview.y
+		this.player.draw()
     })
     this.rt.on("squareEnd", data => {
-        this.setRemotePen()
+		this.setRemotePen()
+		this.player.draw()
 	})
 	
 	this.rt.on("setBackground", data => {
-        this.addBackground(data, true, true)
-	})
-	
-    
+		this.addBackground(data, true, true)
+		this.player.draw()
+	})	
 }
 
 ChatWorkBox.prototype.send = function (action, data) {
