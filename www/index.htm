@@ -140,18 +140,26 @@
         var userName
         omg.getContext().then(ctx => {
 
-            roomName = "t=" + encodeURIComponent(ctx.pageParams.t) + "&s=" + encodeURIComponent(ctx.pageParams.s)
-            if (!ctx.user) {
-                // no user, go to student mode
-                userName = ctx.pageParams.s
-            }
-            else if (ctx.user.username === ctx.pageParams.t) {
-                isTeacher = true
-                userName = ctx.pageParams.t
+            if (typeof ctx.pageParams.demo === "string") {
+                var today = new Date()
+                var time = today.getHours() + ":" + today.getMinutes() + ":" + today.getSeconds() + "_"
+                roomName = "demo" + time + Math.floor((Math.random() * 1000)) 
+                userName = roomName
             }
             else {
-                console.warn("hello?")
-                // maybe a student is logged in? only teachers should have logins
+                roomName = "t=" + encodeURIComponent(ctx.pageParams.t) + "&s=" + encodeURIComponent(ctx.pageParams.s)
+                if (!ctx.user) {
+                    // no user, go to student mode
+                    userName = ctx.pageParams.s
+                }
+                else if (ctx.user.username === ctx.pageParams.t) {
+                    isTeacher = true
+                    userName = ctx.pageParams.t
+                }
+                else {
+                    console.warn("hello?")
+                    // maybe a student is logged in? only teachers should have logins
+                }
             }
             musicChat = new OMGMusicChat(rt)
             musicChat.setupPlayer()
