@@ -54,9 +54,9 @@
         </div>
 
         <div id="view-controls">
-            Your Instrument: <select id="select-instrument"><select>
-            <button id="fullscreen-button">Fullscreen</button>    
             <button id="disconnect-button">Disconnect</button>
+            Settings: <select id="select-instrument"><select>
+            <button id="fullscreen-button">Fullscreen</button>    
             -
             Pen: <input type="color" id="doodle-color" value="#ff0000">
             Width: <input type="number" id="doodle-width" min="1" max="20" value="5">
@@ -88,7 +88,7 @@
         </div>
 
 
-        <div id="error-log-box"><pre id="error-log"></pre></div>
+        <div id="error-log-box"><div id="error-log"></div></div>
         <div id="activity-log"></div>
 
         <script>
@@ -101,7 +101,7 @@
         var logError = message => {
             errorLogButton.style.color = "red"
             var div = document.createElement("div")
-            div.innerHTML = message
+            div.innerHTML = message.split("\n").join("<br>")
             errorLog.appendChild(div)
         }
 
@@ -211,10 +211,11 @@
 
         var disconnectButton = document.getElementById("disconnect-button")
         disconnectButton.onclick = () => {
-            //rt.closeConnections()
-            //rt.stopMedia()
+            rt.closeConnections()
+            rt.stopMedia()
             rt.leave()
-            setTimeout(() => {window.location = window.location}, 250)
+            userListEl.innerHTML = "(Disconnected)"
+            //setTimeout(() => {window.location = "thankyou.htm"}, 250)
         }
     
         var workBoxDiv = document.getElementById("work-area")
