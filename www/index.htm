@@ -59,7 +59,7 @@
             <button id="fullscreen-button">Fullscreen</button>    
             -
             Pen: <input type="color" id="doodle-color" value="#ff0000">
-            Width: <input type="number" id="doodle-width" min="1" max="20" value="5">
+            Width: <input type="number" id="doodle-width" min="1" max="40" value="20">
             <button id="line-button">&minus;</button>    
             <button id="square-button">&#9632;</button>
             -
@@ -107,6 +107,7 @@
 
         window.onerror = e => {
             logError(e)
+            console.error(e)
             return true
         }
 

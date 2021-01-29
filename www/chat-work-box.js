@@ -18,15 +18,16 @@ function ChatWorkBox(rt, div) {
 
 	this.setupControls()
 
+	this.cursor = {color: "red", width: 20}
+	this.remoteCursor = {color: "green", width: 20}
+	
     this.setPen()
-    this.setRemotePen({color: "red", width: 5, type: "DOODLE"})
+    this.setRemotePen({color: "red", width: 20, type: "DOODLE"})
 
     this.player = new OMemePlayer({div})
 
 	this.player.load(this.meme)
 	
-	this.cursor = {color: "red"}
-	this.remoteCursor = {color: "green"}
 	this.player.cursors.push(this.cursor)
 	this.player.cursors.push(this.remoteCursor)
 
@@ -55,7 +56,10 @@ ChatWorkBox.prototype.setPen = function () {
             width: this.sizePicker.value,
             x:0, y:0, w:0, h:0
         }
-    }
+	}
+	this.cursor.color = this.preview.color
+	this.cursor.width = this.preview.width
+	this.cursor.mode = this.mode
     this.send("doodleSet", {type: this.preview.type, color: this.colorPicker.value, width: this.sizePicker.value})
 }
 
@@ -186,23 +190,26 @@ function MemeCanvasEventHandler(mc) {
 	this.drawnSegments = 0;
 	this.looperCounter = 0;
 
-	this.touchstart = function (ev) {
+	// NOTE, this is currently single touch
+
+	this.touchstart = (ev) => {
 		ev.preventDefault();
 		tool.setOffsets();
 		x = ev.targetTouches[0].pageX - this.canvasOffsetLeft;
 		y = ev.targetTouches[0].pageY - this.canvasOffsetTop;
 		tool.start(x, y);
 	}
-	this.touchmove = function (ev) {
+	this.touchmove = (ev) => {
 		ev.preventDefault(); 
 		x = ev.targetTouches[0].pageX - this.canvasOffsetLeft;
 		y = ev.targetTouches[0].pageY - this.canvasOffsetTop;
 		tool.move(x, y);
 	}
-	this.touchend = function (ev) {
+	this.touchend = (ev) => {
 		ev.preventDefault(); 
-		tool.end(ev.targetTouches[0].pageX - this.canvasOffsetLeft,
-				ev.targetTouches[0].pageY - this.canvasOffsetTop);
+		console.log(ev)
+		tool.end(ev.changedTouches[0].pageX - this.canvasOffsetLeft,
+				ev.changedTouches[0].pageY - this.canvasOffsetTop);
 	}
 
 	this.setOffsets = () => {
@@ -222,8 +229,7 @@ function MemeCanvasEventHandler(mc) {
 	this.start = (x, y) => {
 		x = (x - player.horizontalPadding / 2) / (player.canvas.clientWidth - player.horizontalPadding)
 		y = (y - player.verticalPadding / 2) / (player.canvas.clientHeight - player.verticalPadding)
-
-		mc.cursor.active = false
+		//mc.cursor.active = false
 		
 		tool.started = true;
 		if (mc.mode === "DIALOG"){
@@ -246,12 +252,6 @@ function MemeCanvasEventHandler(mc) {
 		tool.move(x, y);
 	}
 	this.mouseout = (ev) => {
-		if (mc.mode === "DIALOG" || mc.mode === "DOODLE") {
-			if (player.preview) {
-				player.preview.x = -1;
-				player.preview.y = -1;
-			}
-		}
 		mc.cursor.active = false
 		this.player.draw()		
 	};
@@ -275,10 +275,10 @@ function MemeCanvasEventHandler(mc) {
 		}
 		else {
 			mc.cursor.active = true
-			mc.cursor.x = x
-			mc.cursor.y = y
 			mc.send("cursorMove", {x, y})
 		}	
+		mc.cursor.x = x
+		mc.cursor.y = y
 
 		this.player.draw()
 	};
@@ -306,6 +306,7 @@ function MemeCanvasEventHandler(mc) {
 				tool.squareTouchEnd(x, y);
 			}
 			
+			mc.setPen()
 		}
 		mc.cursor.active = true
 		

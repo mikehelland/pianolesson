@@ -93,9 +93,13 @@ OMemePlayer.prototype.loadPreview = function (meme) {
 
 
 OMemePlayer.prototype.draw = function() {	
-	
+
+	this.canvas.width = this.canvas.width
+
 	this.drawBackground();
-	
+
+	this.context.globalAlpha = 0.5
+
     for (this._animate_i = 0; this._animate_i < this.meme.layers.length; this._animate_i++) {
 
         if (this.updateIs) {
@@ -123,7 +127,7 @@ OMemePlayer.prototype.draw = function() {
     }
 
     if (this.preview && this.preview.y !== -1) {
-        this.context.globalAlpha = 0.6
+        //this.context.globalAlpha = 0.6
         switch(this.preview.type) {
             case "CHARACTER":
                 //with selection?
@@ -136,21 +140,28 @@ OMemePlayer.prototype.draw = function() {
                 this.previewDoodle(this.preview)
                 break;
         }
-        this.context.globalAlpha = 1
+        //this.context.globalAlpha = 1
     }
 	
 	for (this._drawCur of this.cursors) {
 		if (this._drawCur.active) {
-			this.context.globalAlpha = 0.5
         	this.context.fillStyle = this._drawCur.color
-			this.context.beginPath()
-			this.context.arc(this._drawCur.x * this.context.canvas.width, 
-							this._drawCur.y * this.context.canvas.height, 20, 0, Math.PI*2)
-			this.context.fill()
-			this.context.globalAlpha = 1
+			if (this._drawCur.mode === "RECTANGLE") {
+				this.context.fillRect(this._drawCur.x * this.context.canvas.width - this._drawCur.width * 0.5, 
+					this._drawCur.y * this.context.canvas.height - this._drawCur.width * 0.5, 
+					this._drawCur.width, this._drawCur.width)
+			}
+			else {
+				this.context.beginPath()
+				this.context.arc(this._drawCur.x * this.context.canvas.width, 
+								this._drawCur.y * this.context.canvas.height, this._drawCur.width, 0, Math.PI*2)
+				this.context.fill()
+			}
 		}
-
 	}
+
+	this.context.globalAlpha = 1
+
 	/*requestAnimationFrame(() => {
 		this.animate();
 	});*/
@@ -271,7 +282,6 @@ OMemePlayer.prototype.previewDoodle = function (doodle) {
 
 OMemePlayer.prototype.animateDoodle = function (doodle, nowInLoop) {
 	
-	var drawn = false;
 	var start = true
 	this.context.lineWidth = doodle.width;
 	this.context.strokeStyle = doodle.color; 
@@ -282,8 +292,7 @@ OMemePlayer.prototype.animateDoodle = function (doodle, nowInLoop) {
 			break;
 		}
 	
-		if (!drawn || start) {
-			drawn = true;
+		if (start) {
 			start = false
 			this.context.beginPath();
 			this.context.moveTo(doodle.xyt[j][0] * this.canvas.width, 
@@ -292,7 +301,6 @@ OMemePlayer.prototype.animateDoodle = function (doodle, nowInLoop) {
 		else {
 			if (doodle.xyt[j][0] === -1) {
 				start = true
-				this.context.stroke();
 			}
 			else {
 				this.context.lineTo(doodle.xyt[j][0] * this.canvas.width, 
@@ -300,10 +308,7 @@ OMemePlayer.prototype.animateDoodle = function (doodle, nowInLoop) {
 			}
 		}
 	}
-
-	if (drawn) {
-		this.context.stroke();
-	}	
+	this.context.stroke();
 }
 
 OMemePlayer.prototype.animateRectangle = function (doodle, nowInLoop) {
