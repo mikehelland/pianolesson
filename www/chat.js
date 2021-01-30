@@ -112,7 +112,9 @@ OMGMusicChat.prototype.setupUser = function (user, local) {
 
     var soundSet = Object.values(this.INSTRUMENTS)[0]
     if (user.data && user.data.instrument) {
-        soundSet = this.INSTRUMENTS[user.data.instrument]
+        // TODO there's some reasons why this doesn't work
+        // user.data.instrument is either undefined or set to the "acoustic grand piano" instead of "APIANO"
+        //soundSet = this.INSTRUMENTS[user.data.instrument]
     }
     
     user.part = new OMGPart(null, {name: user.name, audioParams: {gain: 0.3}, soundSet: soundSet}, this.section)
