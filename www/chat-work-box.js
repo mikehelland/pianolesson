@@ -1,7 +1,8 @@
 function ChatWorkBox(rt, div) {
     this.rt = rt
     this.div = div
-    this.meme = {
+	this.meme = 
+	/*{
         "type": "CHAT_WORK_BOX",
         "width": 1400,
         "height": 1864,
@@ -12,7 +13,22 @@ function ChatWorkBox(rt, div) {
             "url": "https://www.virtualsheetmusic.com/images/first_pages/HL/HL-7150First_BIG.png"
           }
         }
-      }
+	  }*/
+	  
+	  {
+		"type": "CHAT_WORK_BOX",
+		"width": 1276,
+		"height": 1650,
+		"layers": [],
+		"background": {
+		  "thing": {
+			"type": "IMAGE",
+			"url": "https://s3.amazonaws.com/halleonard-pagepreviews/HL_DDS_132150g145Fj0Mdw.png",
+			"room": true,
+			"msgtype": "setBackground"
+		  }
+		}
+	  }
     this.mode = "DOODLE"
     this.remoteMode = "DOODLE"
 
