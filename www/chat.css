@@ -23,13 +23,7 @@ body {
     flex-direction: column;
 }
 
-#work-area {
-    position:absolute;
-    top: 2px;
-    bottom: 2px;
-    right:5px;
-    background-color: #111;
-}
+
 #work-area-address-bar {
     width:100%;
     box-sizing: border-box;
@@ -152,12 +146,6 @@ select, button {
     left: 0;
     opacity: 0.6;
     padding:3px;
-}
-
-.piano-canvas {
-    width: 100%;
-    height:50px;
-    position: relative;
 }
 
 #big-piano {

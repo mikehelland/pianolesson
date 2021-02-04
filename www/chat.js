@@ -115,8 +115,9 @@ OMGMusicChat.prototype.setupUser = function (user, local) {
         // user.data.instrument is either undefined or set to the "acoustic grand piano" instead of "APIANO"
         //soundSet = this.INSTRUMENTS[user.data.instrument]
     }
-    
-    user.part = new OMGPart(null, {name: user.name, audioParams: {gain: 0.3}, soundSet: soundSet}, this.section)
+    //soundSet: soundSet
+    user.part = new OMGPart(null, {name: user.name, audioParams: {gain: 0.3}}, this.section)
+    user.part.soundFont = true
     volumeSlider.value = 30
     this.player.loadPart(user.part)
 

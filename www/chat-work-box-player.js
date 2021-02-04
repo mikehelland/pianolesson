@@ -27,8 +27,8 @@ function OMemePlayer(config) {
 	sceneCanvas.style.boxSizing = "border-box"
 	sceneCanvas.style.width = "100%" 
 	sceneCanvas.style.height = "100%"
-	sceneCanvas.width = this.width;
-	sceneCanvas.height = this.height;
+	//sceneCanvas.width = this.width;
+	//sceneCanvas.height = this.height;
 
 	this.sizeCanvas()
 	
