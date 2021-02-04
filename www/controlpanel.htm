@@ -67,7 +67,7 @@
 
 <img id="top-logo" src="/logo.png">
 
-<span id="top">Piano Lesson Room</span>
+<span id="top">Music Lesson Room</span>
 <br>
 <i>Control Panel</i>
 
@@ -77,20 +77,33 @@
 
 <p>Enter a name for this session:</p>
 
-<input id="new-session-name" placeholder="eg. Susie Student, Tuesday 2pm"><button id="new-session-button">Create Session</button>
+<select id="new-session-type"><option value="piano.htm">Piano Room</option><option value="drums.htm">Drum Room</option></select>
+<input id="new-session-name" placeholder="eg. Susie Student, Tuesday 2pm">
+<button id="new-session-button">Create Session</button>
+
+<div id="new-sessions">
+</div>
 <script>
 
 	var nameInput = document.getElementById("new-session-name")
 	var newButton = document.getElementById("new-session-button")
+	var newSessionsDiv = document.getElementById("new-sessions")
+	var newSessionTypeSelect = document.getElementById("new-session-type")
+
 	newButton.onclick = e => {
 
 		var name = nameInput.value
-		var url = "https://" + window.location.host + omg.apps.pianolesson.path + 
-				"?t=" + encodeURIComponent(omg.user.username) + "&s=" + encodeURIComponent(name)
+		var url = "https://" + window.location.host + omg.apps.musicroom.path + 
+				newSessionTypeSelect.value + "?t=" + encodeURIComponent(omg.user.username) + "&s=" + encodeURIComponent(name)
 
-		var thing = {type: "PIANOLESSON_SESSION", name: name, link: url}
+		var thing = {type: "MUSICLESSON_SESSION", name: name, link: url}
 
 		omg.server.post(thing, data => {
+			nameInput.value = ""
+			omg.loadSearchResult(data, {
+				prepend: true, 
+				resultList: newSessionsDiv
+			})
 			console.log(data)	
 		})
 	}

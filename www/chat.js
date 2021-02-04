@@ -90,8 +90,7 @@ OMGMusicChat.prototype.setupLocalUser = function (user) {
 OMGMusicChat.prototype.setupUser = function (user, local) {
 
     user.pressed = []
-    //this.makePianoCanvas(user)
-
+    
     if (!local) {
         var instrumentDiv = document.createElement("span")
         instrumentDiv.innerHTML = user.data ? user.data.instrument : Object.values(this.INSTRUMENTS)[0].name
@@ -230,15 +229,6 @@ OMGMusicChat.prototype.setupMIDI = function () {
     this.midi = new OMGMIDI()
     this.midi.onnoteon  = (note, velocity) => this.noteOn(note, velocity, this.user)
     this.midi.onnoteoff = (note) => this.noteOff(note, this.user)
-}
-
-OMGMusicChat.prototype.makePianoCanvas = function (user) {
-    user.pianoCanvas = document.createElement("div")
-    user.pianoCanvas.className = "piano-canvas"
-    user.div.appendChild(user.pianoCanvas)
-
-    user.piano = new PianoSurface(user.pianoCanvas)
-
 }
 
 
