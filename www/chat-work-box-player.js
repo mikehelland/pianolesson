@@ -11,6 +11,7 @@ function OMemePlayer(config) {
 
 	this.config = config
 	var div = config.div
+	this.autoSize = config.autoSize
 
 	this.cursors = []
 	
@@ -21,8 +22,8 @@ function OMemePlayer(config) {
 
     this.layerExtras = new Map()
 
-	this.width = 640 || config.width;
-	this.height = 480 || config.height;
+	this.width = config.width || 640 
+	this.height = config.height || 480
 	
 	sceneCanvas.style.boxSizing = "border-box"
 	sceneCanvas.style.width = "100%" 
@@ -230,10 +231,10 @@ OMemePlayer.prototype.drawBackground = function() {
 		}
 		catch (e) {
 		}*/
-		this.canvas.width = this.canvas.width;
-		this.context.filleStyle = "#000000";
+		//this.canvas.width = this.canvas.width;
+		this.context.fillStyle = "white";
 		this.context.fillRect(0, 0, 
-				600, this.height);
+				this.canvas.width, this.canvas.height);
 	}
 }
 
@@ -320,6 +321,15 @@ OMemePlayer.prototype.animateRectangle = function (doodle, nowInLoop) {
 }
 
 OMemePlayer.prototype.sizeCanvas = function () {
+	if (this.autoSize) {
+		this.canvas.width = this.canvas.clientWidth
+		this.canvas.height = this.canvas.clientHeight
+		this.verticalPadding = 0
+		this.horizontalPadding = 0
+		return
+	}
+
+
 	if (this.meme) {
 		this.canvas.width = this.meme.width
 		this.canvas.height = this.meme.height

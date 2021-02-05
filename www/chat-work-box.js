@@ -1,34 +1,11 @@
-function ChatWorkBox(rt, div) {
-    this.rt = rt
-    this.div = div
-	this.meme = 
-	/*{
+function ChatWorkBox(params) {
+    this.rt = params.rt
+    this.div = params.div
+	this.meme = params.data || {
         "type": "CHAT_WORK_BOX",
-        "width": 1400,
-        "height": 1864,
         "layers": [],
-        "background": {
-          "thing": {
-            "type": "IMAGE",
-            "url": "https://www.virtualsheetmusic.com/images/first_pages/HL/HL-7150First_BIG.png"
-          }
-        }
-	  }*/
-	  
-	  {
-		"type": "CHAT_WORK_BOX",
-		"width": 1276,
-		"height": 1650,
-		"layers": [],
-		"background": {
-		  "thing": {
-			"type": "IMAGE",
-			"url": "https://s3.amazonaws.com/halleonard-pagepreviews/HL_DDS_132150g145Fj0Mdw.png",
-			"room": true,
-			"msgtype": "setBackground"
-		  }
-		}
-	  }
+	}
+
     this.mode = "DOODLE"
     this.remoteMode = "DOODLE"
 
@@ -40,7 +17,8 @@ function ChatWorkBox(rt, div) {
     this.setPen()
     this.setRemotePen({color: "red", width: 20, type: "DOODLE"})
 
-    this.player = new OMemePlayer({div})
+	var autoSize = typeof this.meme.width !== "number"
+    this.player = new OMemePlayer({div: this.div, autoSize})
 
 	this.player.load(this.meme)
 	

@@ -6,6 +6,8 @@
         <meta http-equiv="Pragma" content="no-cache" />
         <meta http-equiv="Expires" content="0" />
         <link rel="stylesheet" href="chat.css" type="text/css" />
+        <link rel="stylesheet" href="/apps/dawesome/dawesome.css" type="text/css" />
+        <link rel="stylesheet" href="/css/window_manager.css" type="text/css" />
         <style>
             #join-area {
                 display:none;
@@ -42,7 +44,17 @@
 
             #work-area {
                 height:33%;
-            };
+            }
+
+            .drumset-drum {
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                text-align: center;
+                border-radius: 20px;
+                border: 1px solid white;
+                background-color: green;
+            }
         </style>
     </head>
     <body>
@@ -145,11 +157,16 @@
         <script src="/apps/music/js/omgclasses.js"></script>
         <script src="/apps/music/js/omusic_player.js"></script>
         <script src="/apps/music/js/fx.js"></script>
+        <script src="/apps/music/js/vertical_surface.js"></script>
+        <script src="/apps/music/js/sequencer_surface.js"></script>
         <script src="/apps/music/js/libs/peakmeter_basic.js"></script>
         <script src="/apps/music/js/webmidi.js"></script>
-        <script src="/apps/music/js/piano_surface.js"></script>
-        <script src="chat-work-box-player.js"></script>
-        <script src="chat-work-box.js"></script>
+        <script src="/apps/dawesome/js/dawesome.js"></script>
+        <script src="/apps/dawesome/js/dawesome_fragments.js"></script>
+        <script src="/apps/dawesome/js/slider_canvas.js"></script>
+        <script src="/apps/music/js/omusic-embed-draw.js"></script>
+        <script src="/js/window_manager.js"></script>
+        <script src="drumset_surface.js"></script>
         <script src="chat.js"></script>
         
         <script>
@@ -179,7 +196,8 @@
                     // maybe a student is logged in? only teachers should have logins
                 }
             }
-            musicChat = new OMGMusicChat(rt)
+            var drumset = new DrumsetSurface(document.getElementById("big-piano"))
+            musicChat = new OMGMusicChat(rt, drumset)
             musicChat.setupPlayer()
 
             join()
@@ -252,7 +270,19 @@
             }
 
             if (!workBox) {
-                workBox = new ChatWorkBox(rt, workBoxDiv)
+                //workBox = new ChatWorkBox({rt, div: workBoxDiv})
+                var transportWindowConfig = {
+                    x: 0, y: workBoxDiv.offsetTop,
+                    width: 90, height: workBoxDiv.clientHeight,
+                    moveable: false, closeable: false, resizeable: false
+                }
+                var timelineWindowConfig = {
+                    x: 90, y: workBoxDiv.offsetTop,
+                    width: window.innerWidth - transportWindowConfig.width, height: workBoxDiv.clientHeight,
+                    moveable: false, closeable: false, resizeable: false
+                }
+                var mixerWindowConfig = {hidden: true}
+                workBox = new Dawesome({rt, div: workBoxDiv, timelineWindowConfig, transportWindowConfig, mixerWindowConfig})
             }
         }
 

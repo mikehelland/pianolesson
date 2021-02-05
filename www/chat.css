@@ -34,18 +34,12 @@ body {
         position: relative;
         width: 33%;
     }
-    #work-area {
-        left:34%;
-    }
 }
 
 @media all and (orientation:portrait) {
     #user-list .user-panel {
         position: relative;
         width: 50%;
-    }
-    #work-area {
-        left:50%;
     }
 }
 

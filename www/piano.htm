@@ -48,6 +48,18 @@
                 -webkit-transform: scaleX(-1);
                 transform: scaleX(-1);
             }
+
+            @media all and (orientation:landscape) {
+                #work-area {
+                    left:34%;
+                }
+            }
+
+            @media all and (orientation:portrait) {
+                #work-area {
+                    left:50%;
+                }
+            }
         </style>
     </head>
     <body>
@@ -186,7 +198,10 @@
                     // maybe a student is logged in? only teachers should have logins
                 }
             }
-            musicChat = new OMGMusicChat(rt)
+
+            var piano = new PianoSurface(document.getElementById("big-piano"))
+            musicChat = new OMGMusicChat(rt, piano)
+            musicChat.useSoundFont = true
             musicChat.setupPlayer()
 
             join()
@@ -255,8 +270,22 @@
                 }
             }
 
+            var data = {
+                "type": "CHAT_WORK_BOX",
+                "width": 1276,
+                "height": 1650,
+                "layers": [],
+                "background": {
+                "thing": {
+                    "type": "IMAGE",
+                    "url": "https://s3.amazonaws.com/halleonard-pagepreviews/HL_DDS_132150g145Fj0Mdw.png",
+                    "room": true,
+                    "msgtype": "setBackground"
+                }
+                }
+            }
             if (!workBox) {
-                workBox = new ChatWorkBox(rt, workBoxDiv)
+                workBox = new ChatWorkBox({rt, div: workBoxDiv, data})
             }
         }
 
