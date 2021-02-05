@@ -43,6 +43,11 @@
                 width: 100%;
                 height:200px;
             }
+
+            video {
+                -webkit-transform: scaleX(-1);
+                transform: scaleX(-1);
+            }
         </style>
     </head>
     <body>
@@ -157,6 +162,9 @@
         var userName
         omg.getContext().then(ctx => {
 
+            if (ctx.pageParams.novideo) {
+                rt.suppressLocalVideo = true //window.location.host.startsWith("localhost")
+            }
             if (typeof ctx.pageParams.demo === "string") {
                 var today = new Date()
                 var time = today.getHours() + ":" + today.getMinutes() + ":" + today.getSeconds() + "_"
@@ -186,11 +194,8 @@
 
         var userListEl = document.getElementById('user-list')
 
-        var rt = new OMGRealTime() //"https://openmedia.gallery/")
+        var rt = new OMGRealTime()
         rt.acceptAllCalls = true
-
-        //!!!!! todo remove, only here because webcam indicator light is annoying
-        rt.suppressLocalVideo = window.location.host.startsWith("localhost")
 
         var activityLog = document.getElementById("activity-log")
         var log = text => {
