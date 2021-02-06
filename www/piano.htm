@@ -86,8 +86,8 @@
 
         <div id="view-controls">
             <button id="disconnect-button">Disconnect</button>
-            Settings: <select id="select-instrument"><select>
-            <button id="fullscreen-button">Fullscreen</button>    
+            <!--Settings: <select id="select-instrument"><select>-->
+            <button id="fullscreen-button">Fullscreen</button>
             -
             Pen: <input type="color" id="doodle-color" value="#ff0000">
             Width: <input type="number" id="doodle-width" min="1" max="40" value="20">
@@ -98,6 +98,7 @@
             <button id="work-box-clear-button">Clear</button>
             -
             <button id="error-log-button">Log</button>
+            <a href="https://localhost:8081/apps/musicroom/drums.htm?t=admin&s=kj">&gt;</a>
             
         </div>
         
@@ -176,28 +177,27 @@
             if (ctx.pageParams.novideo) {
                 rt.suppressLocalVideo = true //window.location.host.startsWith("localhost")
             }
-            if (typeof ctx.pageParams.demo === "string") {
+            roomName = "t=" + encodeURIComponent(ctx.pageParams.t) + "&s=" + encodeURIComponent(ctx.pageParams.s)
+            if (ctx.pageParams.t === "demo") {
                 var today = new Date()
                 var time = today.getHours() + ":" + today.getMinutes() + ":" + today.getSeconds() + "_"
                 roomName = "demo" + time + Math.floor((Math.random() * 1000)) 
                 userName = roomName
             }
-            else {
-                roomName = "t=" + encodeURIComponent(ctx.pageParams.t) + "&s=" + encodeURIComponent(ctx.pageParams.s)
-                if (!ctx.user) {
-                    // no user, go to student mode
-                    userName = ctx.pageParams.s
-                }
-                else if (ctx.user.username === ctx.pageParams.t) {
-                    isTeacher = true
-                    userName = ctx.pageParams.t
-                }
-                else {
-                    console.warn("hello?")
-                    // maybe a student is logged in? only teachers should have logins
-                }
+            else if (!ctx.user) {
+                // no user, go to student mode
+                userName = ctx.pageParams.s
             }
-
+            else if (ctx.user.username === ctx.pageParams.t) {
+                isTeacher = true
+                userName = ctx.pageParams.t
+            }
+            else {
+                console.warn("hello?")
+                userName = ""
+                // maybe a student is logged in? only teachers should have logins
+            }
+            
             var piano = new PianoSurface(document.getElementById("big-piano"))
             musicChat = new OMGMusicChat(rt, piano)
             musicChat.useSoundFont = true

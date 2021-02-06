@@ -81,17 +81,8 @@
 
         <div id="view-controls">
             <button id="disconnect-button">Disconnect</button>
-            Settings: <select id="select-instrument"><select>
+            <!--Settings: <select id="select-instrument"><select>-->
             <button id="fullscreen-button">Fullscreen</button>    
-            -
-            Pen: <input type="color" id="doodle-color" value="#ff0000">
-            Width: <input type="number" id="doodle-width" min="1" max="40" value="20">
-            <button id="line-button">&minus;</button>    
-            <button id="square-button">&#9632;</button>
-            -
-            <button id="work-box-undo-button">Undo</button>    
-            <button id="work-box-clear-button">Clear</button>
-            -
             <button id="error-log-button">Log</button>
             
         </div>
@@ -209,7 +200,7 @@
         rt.acceptAllCalls = true
 
         //!!!!! todo remove, only here because webcam indicator light is annoying
-        rt.suppressLocalVideo = window.location.host.startsWith("localhost")
+        //rt.suppressLocalVideo = window.location.host.startsWith("localhost")
 
         var activityLog = document.getElementById("activity-log")
         var log = text => {

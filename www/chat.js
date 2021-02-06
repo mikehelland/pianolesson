@@ -60,7 +60,7 @@ OMGMusicChat.prototype.whenPlayersReady = function () {
     this.setupKeyboard()
     this.setupCommands()
 
-    var selectInstrument = document.getElementById("select-instrument")
+    /*var selectInstrument = document.getElementById("select-instrument")
     for (var instrument in this.INSTRUMENTS) {
         selectInstrument.innerHTML += `<option value=${instrument}>${this.INSTRUMENTS[instrument].name}</option>`
     }
@@ -71,7 +71,7 @@ OMGMusicChat.prototype.whenPlayersReady = function () {
         this.sendChangeSoundSet(instrument)
         this.user.data.instrument = instrument
         this.rt.updateLocalUserData(this.user.data)
-    }
+    }*/
 }
 
 OMGMusicChat.prototype.setupLocalUser = function (user) {
