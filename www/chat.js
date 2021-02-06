@@ -112,6 +112,18 @@ OMGMusicChat.prototype.setupUser = function (user, local) {
     if (!this.useSoundFont) {
         soundSet = Object.values(this.INSTRUMENTS)[0]
     }
+    else {
+        soundSet = {
+            "soundFont": {
+              "url": "https://surikov.github.io/webaudiofontdata/sound/0001_FluidR3_GM_sf2_file.js",
+              "name": "0001_FluidR3_GM_sf2_file.js"
+            },
+            "octave": 5,
+            "lowNote": 0,
+            "highNote": 108,
+            "chromatic": true
+          }
+    }
     if (user.data && user.data.instrument) {
         // TODO there's some reasons why this doesn't work
         // user.data.instrument is either undefined or set to the "acoustic grand piano" instead of "APIANO"
