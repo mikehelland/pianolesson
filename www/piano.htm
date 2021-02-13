@@ -271,6 +271,20 @@
 
             var data = {
                 "type": "CHAT_WORK_BOX",
+                "width": 480,
+                "height": 364,
+                "layers": [],
+                "background": {
+                    "thing": {
+                    "type": "IMAGE",
+                    "url": "https://blog.helpwithmusic.com/wp-content/uploads/2014/07/blog7MHLL3.jpg",
+                    "room": true,
+                    "msgtype": "setBackground"
+                    }
+                }
+                }
+            /*var data = {
+                "type": "CHAT_WORK_BOX",
                 "width": 1276,
                 "height": 1650,
                 "layers": [],
@@ -282,7 +296,7 @@
                     "msgtype": "setBackground"
                 }
                 }
-            }
+            }*/
             if (!workBox) {
                 workBox = new ChatWorkBox({rt, div: workBoxDiv, data})
             }
