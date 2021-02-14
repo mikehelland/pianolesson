@@ -60,6 +60,30 @@
                     left:50%;
                 }
             }
+
+            #demo {
+                display:none;
+                text-align: center;
+                padding: 15px 5px;
+                border: 1px solid black;
+                flex-grow: 1;
+            }
+
+            .big-button, .big-button-buy {
+                display: inline-block;
+                font-family: Helvetica, Arial, sans-serif;
+                font-size: 18px;
+                line-height: 48px;
+                height: 48px;
+                padding-left: 48px;
+                padding-right: 48px;
+                color: #ffffff;
+                min-width: 165px;
+                background-color: #008800;
+                border-radius: 4px;
+                text-align: center;
+                box-shadow: 0 0 0 1px rgba(0,0,0,.1) inset;
+            }
         </style>
     </head>
     <body>
@@ -107,6 +131,26 @@
                 <div id="you" class="user-panel">
                     <div id="your-name" class="user-name"></div>
                 </div>    
+                <div id="demo" class="user-panel">
+                    <p>Piano Music Room Demo</p>
+                    <p>
+                        This is where your student would appear.
+                    </p>
+                    <p>
+                        You can rent this room for $50 for one month and be teaching in no time!
+                    </p>
+
+                    <a href="/rent_music_room_month.htm" class="big-button-buy">Go To Purchase Page</a>
+
+                    <p>
+                    Have questions? <!--Click below to see if someone is avialable to help live in your session.-->
+                    </p>
+
+                    <a id="assistance-button" href="#" class="big-button-buy">Request Assistance</a>
+                    
+                </div> 
+
+
             </div>
 
             <div id="work-area">
@@ -172,6 +216,7 @@
         var isTeacher = false
         var roomName = ""
         var userName
+        var demo
         omg.getContext().then(ctx => {
 
             if (ctx.pageParams.novideo) {
@@ -183,6 +228,7 @@
                 var time = today.getHours() + ":" + today.getMinutes() + ":" + today.getSeconds() + "_"
                 roomName = "demo" + time + Math.floor((Math.random() * 1000)) 
                 userName = roomName
+                demo = true
             }
             else if (!ctx.user) {
                 // no user, go to student mode
@@ -267,6 +313,10 @@
                 if (!room.users[user].peerConnection) {
                     rt.callUser(user)
                 }
+            }
+
+            if (demo) {
+                showDemoArea()
             }
 
             var data = {
@@ -361,6 +411,9 @@
             
         }
 
+        function showDemoArea() {
+            document.getElementById("demo").style.display = "block"
+        }
 
         if (navigator.userAgent.indexOf("iPhone") > -1 ||
             navigator.userAgent.indexOf("iPad") > -1 ||
@@ -368,7 +421,21 @@
                 document.getElementById("apple-tip").style.visibility = "visible"
             }
 
-        
+       
+        var assistanceButton = document.getElementById("assistance-button")
+        assistanceButton.onclick = e => {
+            assistanceButton.innerHTML = "Checking"
+            var t = 0 
+            var wait = 5
+            var handle = setInterval(() => {
+                assistanceButton.innerHTML += "."
+                t++
+                if (t === wait) {
+                    clearInterval(handle)
+                    assistanceButton.innerHTML = "No one is available right now"
+                }
+            }, 1000)
+        }
         </script>
     </body>
 </html>
