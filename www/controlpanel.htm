@@ -52,6 +52,24 @@
 	#new-session-name {
 		width:350px;
 	}
+
+	#drop-materials {
+		text-align: center;
+		border:5px dashed gray;
+		padding:20px;
+	}
+	.drop-zone-hover {
+		border: 5px dashed #1db918 !important;
+	}
+	.post-attachment-upload {
+		border: 1px solid gray;
+		text-align: left;
+	}
+	.post-attachment-upload-status {
+		margin-left: 10px;
+		display: block;
+		float: right;
+	}
 </style>
 
 	<link rel="stylesheet" href="/css/viewer.css" type="text/css" />
@@ -112,9 +130,11 @@
 
 <h3>Add Materials</h3>
 
-<p>
-	Drad and drop anything here.
-</p>
+<div id="drop-materials">
+	Drag and drop images here.
+</div>
+
+<div id="new-materials"></div>
 
 <h3>Sessions and materials</h3>
 
@@ -137,6 +157,7 @@
 </div>
 
 <script src="/js/embedded_viewer.js"></script>
+<script src="dropzone.js"></script>
 
 <script>
 	var searchInput = document.getElementById("main-search-input")
@@ -157,6 +178,9 @@
 		omg.search(makeSearchParams(), true)
 	})
 
+	var dropDiv = document.getElementById("drop-materials")
+	var uploadedDiv = document.getElementById("new-materials")
+	new MusicRoomDropZone({div: dropDiv, attachmentList: uploadedDiv})
 </script>
 </div>
 </body>

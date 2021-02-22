@@ -321,7 +321,7 @@ OMemePlayer.prototype.animateRectangle = function (doodle, nowInLoop) {
 }
 
 OMemePlayer.prototype.sizeCanvas = function () {
-	if (this.autoSize) {
+	if (!this.meme || !this.meme.width) {
 		this.canvas.width = this.canvas.clientWidth
 		this.canvas.height = this.canvas.clientHeight
 		this.verticalPadding = 0

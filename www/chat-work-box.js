@@ -17,8 +17,7 @@ function ChatWorkBox(params) {
     this.setPen()
     this.setRemotePen({color: "red", width: 20, type: "DOODLE"})
 
-	var autoSize = typeof this.meme.width !== "number"
-    this.player = new OMemePlayer({div: this.div, autoSize})
+	this.player = new OMemePlayer({div: this.div})
 
 	this.player.load(this.meme)
 	
@@ -167,6 +166,7 @@ ChatWorkBox.prototype.addBackground = function (thing, resize, fromRemote) {
             this.player.meme.height = img.height
 			this.player.sizeCanvas()
 		}
+		this.player.draw()
 	})
 
 	if (!fromRemote) {

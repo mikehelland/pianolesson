@@ -53,9 +53,9 @@ OMGMusicChat.prototype.setupKeyboard = function () {
 OMGMusicChat.prototype.whenPlayersReady = function () {
     this.player = new OMusicPlayer()
     this.player.loadFullSoundSets = true
-    this.section = new OMGSection()
+    this.song = new OMGSong()
 
-    this.player.prepareSong(this.section.song)
+    this.player.prepareSong(this.song)
 
     this.setupKeyboard()
     this.setupCommands()
@@ -130,8 +130,8 @@ OMGMusicChat.prototype.setupUser = function (user, local) {
         //soundSet = this.INSTRUMENTS[user.data.instrument]
     }
     //soundSet: soundSet
-    user.part = new OMGPart(null, {name: user.name, audioParams: {gain: 0.3}, soundSet}, this.section)
-    user.part.soundFont = this.useSoundFont
+
+    user.part = this.song.addPart({name: user.name, audioParams: {gain: 0.3}, soundSet})
     
     volumeSlider.value = 30
     this.player.loadPart(user.part)
