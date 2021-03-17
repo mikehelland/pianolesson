@@ -151,7 +151,7 @@
                         This is where your student would appear.
                     </p>
                     <p>
-                        You can rent this room for $50 for one month and be teaching in no time!
+                        You can rent this room for $15 for one month and be teaching in no time!
                     </p>
 
                     <a href="/rent_music_room_month.htm" class="big-button-buy">Go To Purchase Page</a>
@@ -214,21 +214,22 @@
         <script src="https://webrtc.github.io/adapter/adapter-latest.js"></script>
         <script src="/js/omgrtc.js"></script>
         <script src="/js/omgservice.js"></script>
-        <script src="/apps/music/js/libs/tuna-min.js"></script>
         <script src="/apps/music/js/omgservice_music.js"></script>
         <!--<script src="/apps/music/js/omgclasses.js"></script>-->
-        <script src="/apps/music/js/omusic_player2.js"></script>
-        <script src="/apps/music/js/fxfactory.js"></script>
+        
+        <script src="/apps/music/js/omusic.js" type="module"></script>
+        
         <script src="/apps/music/js/libs/peakmeter_basic.js"></script>
         <script src="/apps/music/js/webmidi.js"></script>
         <script src="/apps/music/js/piano_surface.js"></script>
         <script src="chat-work-box-player.js"></script>
         <script src="chat-work-box.js"></script>
-        <script src="chat.js"></script>
+        <!--<script src="chat.js"></script>-->
         
         <script src="/js/searchbox.js"></script>
 
-        <script>
+        <script type="module">
+        import OMGMusicChat from "./chat.js"
         var isTeacher = false
         var roomName = ""
         var userName

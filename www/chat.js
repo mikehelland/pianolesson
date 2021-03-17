@@ -1,4 +1,6 @@
-function OMGMusicChat(rt, instrument, onready) {
+import OMusicContext from "/apps/music/js/omusic.js"
+
+export default function OMGMusicChat(rt, instrument, onready) {
     this.rt = rt
     this.instrument = instrument 
     this.instrument.setupEvents(key => this.noteOn(key.note, 60, this.user),
@@ -10,17 +12,7 @@ OMGMusicChat.prototype.setupPlayer = function () {
     this.visibleMeters = []
     this.updateMeters()
 
-    if (typeof OMusicPlayer === "undefined") {
-        omg.util.loadScripts(
-            ["/apps/music/js/omusic_player.js"],
-            () => {
-                this.whenPlayersReady()
-            }
-        )
-    }
-    else {
-        this.whenPlayersReady()
-    }
+    this.whenPlayersReady()
 }
 
 OMGMusicChat.prototype.setupKeyboard = function () {
@@ -51,15 +43,16 @@ OMGMusicChat.prototype.setupKeyboard = function () {
 
 
 OMGMusicChat.prototype.whenPlayersReady = function () {
-    this.player = new OMusicPlayer()
-    this.player.loadFullSoundSets = true
-    this.song = new OMGSong()
-
-    this.player.prepareSong(this.song)
-
-    this.setupKeyboard()
-    this.setupCommands()
-
+    this.musicContext = new OMusicContext()
+    this.musicContext.loadFullSoundSets = true
+    this.musicContext.load({sections: [{name: "section1"}]})
+    .then(({song, player}) => {
+        this.player = player
+        this.song = song
+        this.setupKeyboard()
+        this.setupCommands()
+    })
+    
     /*var selectInstrument = document.getElementById("select-instrument")
     for (var instrument in this.INSTRUMENTS) {
         selectInstrument.innerHTML += `<option value=${instrument}>${this.INSTRUMENTS[instrument].name}</option>`
@@ -134,7 +127,7 @@ OMGMusicChat.prototype.setupUser = function (user, local) {
     user.part = this.song.addPart({name: user.name, audioParams: {gain: 0.3}, soundSet})
     
     volumeSlider.value = 30
-    this.player.loadPart(user.part)
+    this.musicContext.loadPartHeader(user.part)
 
 
     this.makeMeter(user)
@@ -188,7 +181,7 @@ OMGMusicChat.prototype.makeMeter = function (user) {
     user.meterDiv.className = "volume-meter"
     user.div.appendChild(user.meterDiv)
 
-    var meter = new BasicPeakMeter(user.part.postFXGain, user.meterDiv, this.player.context);
+    var meter = new BasicPeakMeter(user.part.postFXGain, user.meterDiv, this.musicContext.audioContext);
     this.visibleMeters.push(meter);
 }
 
