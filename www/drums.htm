@@ -143,24 +143,19 @@
         <script src="https://webrtc.github.io/adapter/adapter-latest.js"></script>
         <script src="/js/omgrtc.js"></script>
         <script src="/js/omgservice.js"></script>
-        <script src="/apps/music/js/libs/tuna-min.js"></script>
         <script src="/apps/music/js/omgservice_music.js"></script>
-        <script src="/apps/music/js/omgclasses.js"></script>
-        <script src="/apps/music/js/omusic_player.js"></script>
-        <script src="/apps/music/js/fx.js"></script>
         <script src="/apps/music/js/vertical_surface.js"></script>
         <script src="/apps/music/js/sequencer_surface.js"></script>
         <script src="/apps/music/js/libs/peakmeter_basic.js"></script>
         <script src="/apps/music/js/webmidi.js"></script>
-        <script src="/apps/dawesome/js/dawesome.js"></script>
         <script src="/apps/dawesome/js/dawesome_fragments.js"></script>
         <script src="/apps/dawesome/js/slider_canvas.js"></script>
-        <script src="/apps/music/js/omusic-embed-draw.js"></script>
-        <script src="/js/window_manager.js"></script>
         <script src="drumset_surface.js"></script>
-        <script src="chat.js"></script>
         
-        <script>
+        <script type="module">
+        import OMGMusicChat from "./chat.js"
+        import Dawesome from "/apps/dawesome/js/dawesome.js"
+        
         var isTeacher = false
         var roomName = ""
         var userName
@@ -273,7 +268,8 @@
                     moveable: false, closeable: false, resizeable: false
                 }
                 var mixerWindowConfig = {hidden: true}
-                workBox = new Dawesome({rt, div: workBoxDiv, timelineWindowConfig, transportWindowConfig, mixerWindowConfig})
+                var fxWindowConfig = {hidden: true}
+                //workBox = new Dawesome({rt, div: workBoxDiv, timelineWindowConfig, transportWindowConfig, mixerWindowConfig})
             }
         }
 

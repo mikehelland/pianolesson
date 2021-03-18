@@ -236,7 +236,10 @@ OMGMusicChat.prototype.changeSoundSet = function (instrument, part) {
 
 OMGMusicChat.prototype.setupMIDI = function () {
     this.midi = new OMGMIDI()
-    this.midi.onnoteon  = (note, velocity) => this.noteOn(note, velocity, this.user)
+    this.midi.onnoteon  = (note, velocity) => {
+        this.noteOn(note, velocity, this.user)
+        console.log(note)
+    }
     this.midi.onnoteoff = (note) => this.noteOff(note, this.user)
 }
 
