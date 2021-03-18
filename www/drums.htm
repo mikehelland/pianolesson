@@ -125,11 +125,11 @@
             errorLog.appendChild(div)
         }
 
-        window.onerror = e => {
-            logError(e)
+        /*window.onerror = (e, a, b, c) => {
+            logError(e + " " + a + " " + b + " " + c)
             console.error(e)
             return true
-        }
+        }*/
 
         errorLogButton.onclick = e => {
             errorLogBox.style.display = isErrorLogShowing ? "none" : "block"

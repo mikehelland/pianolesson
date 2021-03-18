@@ -358,12 +358,12 @@
         rt.onnewuser = (name, user) => {
             console.log(name + "joined")
             log(name + " joined")
-            userEl = document.createElement("div")
+            var userEl = document.createElement("div")
             userEl.className = "user-panel"
-            nameEl = document.createElement("div")
+            var nameEl = document.createElement("div")
             nameEl.className = "user-name"
             nameEl.innerHTML = name
-            videoEl = user.video
+            var videoEl = user.video
             userEl.appendChild(nameEl)
             userEl.appendChild(videoEl)
             userListEl.appendChild(userEl)
