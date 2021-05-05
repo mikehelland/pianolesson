@@ -68,6 +68,11 @@
                 padding: 15px 5px;
                 border: 1px solid black;
                 flex-grow: 1;
+                box-sizing: border-box;
+            }
+
+            #share-url {
+                box-sizing: border-box;
             }
 
             .big-button, .big-button-buy {
@@ -96,6 +101,9 @@
             }
             #materials-button {
                 display:none;
+            }
+            #share-url {
+                width:100%;
             }
         </style>
     </head>
@@ -146,7 +154,11 @@
                     <div id="your-name" class="user-name"></div>
                 </div>    
                 <div id="demo" class="user-panel">
-                    <p>Piano Music Room Demo</p>
+                    Share this link with a student and start teaching:
+                    <br>
+                    <br>
+                    <input id="share-url">
+                    <!--<p>Piano Music Room Demo</p>
                     <p>
                         This is where your student would appear.
                     </p>
@@ -157,11 +169,11 @@
                     <a href="/rent_music_room_month.htm" class="big-button-buy">Go To Purchase Page</a>
 
                     <p>
-                    Have questions? <!--Click below to see if someone is avialable to help live in your session.-->
+                    Have questions? Click below to see if someone is avialable to help live in your session.
                     </p>
 
                     <a id="assistance-button" href="#" class="big-button-buy">Request Assistance</a>
-                    
+                    -->
                 </div> 
 
 
@@ -242,14 +254,16 @@
             roomName = "t=" + encodeURIComponent(ctx.pageParams.t) + "&s=" + encodeURIComponent(ctx.pageParams.s)
             if (ctx.pageParams.t === "demo") {
                 var today = new Date()
-                var time = today.getHours() + ":" + today.getMinutes() + ":" + today.getSeconds() + "_"
-                roomName = "demo" + time + Math.floor((Math.random() * 1000)) 
-                userName = roomName
+                userName = "demo" + Math.floor((Math.random() * 1000)) + "_" + Date.now() 
+                roomName = "t=" + encodeURIComponent(userName) + "&s=" + encodeURIComponent(ctx.pageParams.s)
                 demo = true
+
+                setupMaterialsButton()
+                document.getElementById("share-url").value = window.location.origin + window.location.pathname + "?" + roomName
             }
             else if (!ctx.user) {
                 // no user, go to student mode
-                userName = ctx.pageParams.s
+                userName = ctx.pageParams.s || "student"
             }
             else if (ctx.user.username === ctx.pageParams.t) {
                 isTeacher = true
@@ -356,6 +370,10 @@
 
         
         rt.onnewuser = (name, user) => {
+            if (demo) {
+                document.getElementById("demo").style.display = "none"
+            }
+
             console.log(name + "joined")
             log(name + " joined")
             var userEl = document.createElement("div")
@@ -431,7 +449,7 @@
             }
 
        
-        var assistanceButton = document.getElementById("assistance-button")
+        /*var assistanceButton = document.getElementById("assistance-button")
         assistanceButton.onclick = e => {
             assistanceButton.innerHTML = "Checking"
             var t = 0 
@@ -444,7 +462,7 @@
                     assistanceButton.innerHTML = "No one is available right now"
                 }
             }, 1000)
-        }
+        }*/
 
         function setupMaterialsButton() {
             var materialsButton = document.getElementById("materials-button")
