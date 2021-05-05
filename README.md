@@ -6,7 +6,7 @@ Also includes an on-screen piano keyboard, and a two-way interactive whiteboard 
 
 Try it out:
 
-[https://bspoke.chat/apps/musicroom/piano.htm?t=demo&s=music](https://bspoke.chat/apps/musicroom/piano.htm?t=demo&s=music)
+[https://bspoke.chat/apps/musicroom/piano.htm?t=demo&s=music](https://bspoke.chat/apps/musicroom/piano.htm?t=demo&s=gh)
 
 For the [OMG Platform](https://github.com/mikehelland/openmedia.gallery).
 
