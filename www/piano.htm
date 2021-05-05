@@ -8,6 +8,8 @@
         <link rel="stylesheet" href="/css/viewer.css" type="text/css" />
         <link rel="stylesheet" href="chat.css" type="text/css" />
         <style>
+            a {color:white;}a:visited {color:white;}
+            #help-link {display: none;}
 
             #work-area {
                 position:absolute;
@@ -144,7 +146,8 @@
             <button id="work-box-clear-button">Clear</button>
             -
             <button id="error-log-button">Log</button>
-            <a href="https://localhost:8081/apps/musicroom/drums.htm?t=admin&s=kj">&gt;</a>
+            -
+            <a id="help-link" href="mailto:info@bspoke.chat">info@bspoke.chat</a>
             
         </div>
         
@@ -158,6 +161,12 @@
                     <br>
                     <br>
                     <input id="share-url">
+                    <br>
+                    <br>
+                    questions?
+                    <br>
+                    <br>
+                    <a href="mailto:info@bspoke.chat">info@bspoke.chat</a>
                     <!--<p>Piano Music Room Demo</p>
                     <p>
                         This is where your student would appear.
@@ -439,6 +448,7 @@
         }
 
         function showDemoArea() {
+            document.getElementById("help-link").style.display = "inline"
             document.getElementById("demo").style.display = "block"
         }
 
