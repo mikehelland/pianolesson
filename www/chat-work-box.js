@@ -474,10 +474,13 @@ ChatWorkBox.prototype.setupControls = function () {
 		}
 		this.player.draw()
 	}
-	this.clearButton.onclick = e => {
-		this.setPen()
-		this.lastCleared = JSON.parse(JSON.stringify(this.meme.layers))
-		this.meme.layers = []
-		this.player.draw()
-	}
+	this.clearButton.onclick = e => this.clear()
+}
+
+ChatWorkBox.prototype.clear = function () {
+	this.setPen()
+	this.lastCleared = JSON.parse(JSON.stringify(this.meme.layers))
+	this.meme.layers = []
+	this.player.draw()
+
 }

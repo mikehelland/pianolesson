@@ -494,6 +494,7 @@
 
                 var searchBox = new OMGSearchBox({div, types:["IMAGESET"]})
                 searchBox.onclickcontent = e => {
+                    workBox.clear()
                     workBox.addBackground({type: "IMAGE", url: e.data.set[0].url}, true)
                     clearDialog()
                 }
