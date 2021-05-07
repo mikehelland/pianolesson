@@ -15,7 +15,21 @@ function MusicRoomDropZone(config) {
         e.preventDefault()
         this.div.classList.remove("drop-zone-hover")
     
-        var items = e.dataTransfer.items
+        var files = []
+        var file
+        var item
+        for (var i = 0; i < e.dataTransfer.items.length; i++) {
+            var item = e.dataTransfer.items[i]
+            if (item.kind === "file") {
+                file = item.getAsFile()
+                files.push({file, type: item.type}) 
+            }
+            else if (item.type === "text/uri-list") {
+                item.getAsString(s => files.push({uri: s}))
+            }
+
+        }
+        
 
         omg.server.post({
             type: "IMAGESET",
@@ -23,7 +37,7 @@ function MusicRoomDropZone(config) {
             set: [],
             draft: true,
         }, thing => {
-            Promise.all(this.handleDroppedItems(items, thing)).then(values => {
+            Promise.all(this.handleDroppedItems(files, thing)).then(values => {
                 
                 if (thing.set.length > 0) {
                     delete thing.draft
@@ -70,18 +84,18 @@ MusicRoomDropZone.prototype.handleDroppedItems = function (items, imageset) {
     var promises = []
     
     for (var i = 0; i < items.length; i++) {
-        if (items[i].kind === "file") {
+        if (items[i].file) {
             promises.push(this.handleDroppedFile(items[i], imageset))
         }
-        else if (items[i].type === "text/uri-list") {
-            items[i].getAsString(s => this.handleDroppedURI(s), imageset)
+        else if (items[i].uri) {
+            this.handleDroppedURI(items[i].uri)
         }
     }
     return promises
 }
 
 MusicRoomDropZone.prototype.handleDroppedFile = function (item, imageset) {
-    var file = item.getAsFile()
+    var file = item.file
     var media = {
         mimeType: item.type, //.startsWith("image/")
         url: window.location.origin + "/uploads/" + omg.user.id + "/" + imageset.id + "/" + file.name, 
